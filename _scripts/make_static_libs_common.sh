@@ -35,7 +35,7 @@ mkdir -p ${INCLUDEDIR}
 mkdir -p ${LIBDIR}
 mkdir -p ${DLDIR}
 
-function wget {
+function WGET {
   URL=$1
   FILENAME=${DLDIR}/$(basename $1)
   if ! [ -s $FILENAME ]; then
@@ -44,6 +44,17 @@ function wget {
 
   cd $(mktemp -d)
   tar xifzv $FILENAME --strip-components=1
+}
+
+function GITCLONE {
+  URL=$1
+  DIR=$2
+  BRANCH=$3
+
+  cd $(mktemp -d)
+
+  git clone --recursive -b $BRANCH $URL $DIR
+  cd $DIR
 }
 
 function APTGETSOURCE {

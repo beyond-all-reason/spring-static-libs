@@ -33,7 +33,7 @@ jobs:
         run: |
           sudo apt update -y
           #sudo apt upgrade -y
-          sudo apt install -y git cmake git wget 
+          sudo apt install -y git cmake git wget
         shell: bash
 
       - name: Clone the master Branch of Repo
