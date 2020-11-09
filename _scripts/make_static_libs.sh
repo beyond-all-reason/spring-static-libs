@@ -15,7 +15,8 @@ ${CMAKE} -DBUILD_SHARED_LIBS=OFF \
 -DENABLE_ASSEMBLY=PCLMUL \
 -DSKIP_CPUID_CHECK=ON \
 -DUSE_STATIC_RUNTIME=ON \
--DCMAKE_INSTALL_PREFIX=${WORKDIR} .
+-DCMAKE_INSTALL_PREFIX=${WORKDIR} \
+.
 
 ${MAKE}
 ${MAKE} install
@@ -101,6 +102,7 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --enable-shared=no \
 --enable-static=yes \
 --disable-oggtest
+
 ${MAKE}
 ${MAKE} install
 
@@ -128,17 +130,20 @@ $MAKE install
 #CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR}
 
 #high perf version
-GITCLONE https://github.com/nmoinvaz/minizip.git minizip 1.2
+GITCLONE https://github.com/nmoinvaz/minizip.git minizip master
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="$MYCFLAGS" \
 -DCMAKE_C_FLAGS="$MYCFLAGS" \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
--DUSE_AES=OFF \
--DBUILD_TEST=OFF \
+-DMZ_LIBBSD=OFF \
+-DMZ_PKCRYPT=OFF \
+-DMZ_SIGNING=OFF \
+-DMZ_WZAES=OFF \
 -DZLIB_LIBRARY=${LIBDIR}/libz.a \
 -DZLIB_INCLUDE_DIR:PATH=${INCLUDEDIR} \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
+
 
 ${MAKE}
 ${MAKE} install
