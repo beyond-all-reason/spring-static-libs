@@ -13,11 +13,11 @@ export LIBDIR=${WORKDIR}/lib
 export MAKE="make -j$(nproc)"
 export CMAKE="cmake"
 export DLDIR=${WORKDIR}/download
-export MYCFLAGS="-fcommon -fPIC -DPIC"
+export MYCFLAGS="-fPIC -DPIC"
+export MYCXXFLAGS="-fPIC -DPIC ${MYCFLAGS}"
 
-#export PATH=/home/buildbot/mxe/usr/bin:$PATH
-#export TARGETOS=win32
-#export CMAKE=i686-w64-mingw32.static.posix-cmake
+export CFLAGS=${MYCFLAGS}
+export CXXFLAGS=${MYCXXFLAGS}
 
 export UBUNTU_MAJORVER=$(sed -n 's/^DISTRIB_RELEASE=//p' /etc/lsb-release | cut -d'.' -f1)
 

@@ -10,7 +10,7 @@ jobs:
     name: Ubuntu-${{ matrix.config.distro }}
     runs-on: ${{ matrix.config.runs-on }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         config:
         - {
@@ -29,6 +29,11 @@ jobs:
       - name: Debug Action
         uses: hmarr/debug-action@v1.0.0
 
+      - name: Replace CMake version
+        uses: jwlawson/actions-setup-cmake@v1.4
+        with:
+          cmake-version: '3.16.x'
+
       - name: Apt Update and Installation of Essential Packages
         run: |
           sudo apt update -y
@@ -46,15 +51,17 @@ jobs:
           git clone https://github.com/${GITHUB_REPOSITORY}.git -b ${{ matrix.config.distro }} spring-static-libs
         shell: bash
 
+      - name: Clean up old files
+        run: |
+          rm -rf ./*
+        working-directory: ${{ github.workspace }}/spring-static-libs
+        shell: bash
+
       - name: Execute install-linux.sh
         run: |
           sudo ./_scripts/install-linux.sh ${{ github.workspace }}/spring-static-libs
         working-directory: ${{ github.workspace }}/spring-static-libs-scripts
         shell: bash
-
-#      - name: Setup tmate session
-#        if: matrix.config.distro == '20.04'
-#        uses: mxschmitt/action-tmate@v3
 
       - name: Execute make_static_libs.sh
         run: |
@@ -62,11 +69,15 @@ jobs:
         working-directory: ${{ github.workspace }}/spring-static-libs-scripts
         shell: bash
 
+#      - name: Setup tmate session
+#        if: matrix.config.distro == '20.04'
+#        uses: mxschmitt/action-tmate@v3
+
       - name: Commit files
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name  "GitHub Action"
-          git add *
+          git add -A .
           git commit -m "Github Action Build of ${{ steps.clone-master-branch.outputs.commit-id }}"
         working-directory: ${{ github.workspace }}/spring-static-libs
         shell: bash

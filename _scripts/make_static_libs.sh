@@ -5,12 +5,13 @@ source $(dirname $0)/make_static_libs_common.sh
 
 # zlib
 #WGET https://www.zlib.net/zlib-1.2.11.tar.gz
-#CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR}
+#./configure --prefix ${WORKDIR}
 # high perf zlib version
 GITCLONE https://github.com/cloudflare/zlib.git zlib gcc.amd64
-${CMAKE} -DBUILD_SHARED_LIBS=OFF \
--DCMAKE_CXX_FLAGS="$MYCFLAGS" \
--DCMAKE_C_FLAGS="$MYCFLAGS" \
+${CMAKE} \
+-DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
+-DCMAKE_C_FLAGS="${MYCFLAGS}" \
+-DBUILD_SHARED_LIBS=OFF \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DENABLE_ASSEMBLY=PCLMUL \
 -DSKIP_CPUID_CHECK=ON \
@@ -24,7 +25,6 @@ ${MAKE} install
 # libpng
 WGET https://downloads.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ${MAKE} -f scripts/makefile.linux ZLIBLIB=${LIBDIR} ZLIBINC=${INCLUDEDIR} prefix=${WORKDIR}
-
 ${MAKE} -f scripts/makefile.linux prefix=${WORKDIR} install
 
 
@@ -43,10 +43,11 @@ ${MAKE}
 ${MAKE} install
 
 # libIL (DevIL)
-WGET https://api.github.com/repos/spring/DevIL/tarball/d46aa9989f502b89de06801925d20e53d220c1b4
+#WGET https://api.github.com/repos/spring/DevIL/tarball/d46aa9989f502b89de06801925d20e53d220c1b4
+WGET https://downloads.sourceforge.net/project/openil/DevIL/1.8.0/DevIL-1.8.0.tar.gz
 ${CMAKE} DevIL \
--DCMAKE_CXX_FLAGS="$MYCFLAGS" \
--DCMAKE_C_FLAGS="$MYCFLAGS" \
+-DCMAKE_CXX_FLAGS="${MYCFLAGS} -fpermissive" \
+-DCMAKE_C_FLAGS="${MYCFLAGS} -fpermissive" \
 -DBUILD_SHARED_LIBS=0 \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 -DPNG_PNG_INCLUDE_DIR=${INCLUDEDIR} -DPNG_LIBRARY_RELEASE=${LIBDIR}/libpng.a \
@@ -69,8 +70,7 @@ ${MAKE} install
 # glew
 WGET https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.tgz
 
-${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR}
-${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
+CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
 
 # openssl
 WGET https://www.openssl.org/source/openssl-1.1.1c.tar.gz
@@ -106,7 +106,8 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 ${MAKE}
 ${MAKE} install
 
-APTGETSOURCE liblzma-dev
+#APTGETSOURCE liblzma-dev
+WGET https://downloads.sourceforge.net/project/lzmautils/xz-5.2.5.tar.gz
 if [ -f autogen.sh ]; then
   ./autogen.sh
 fi
@@ -127,21 +128,29 @@ $MAKE install
 #libminizip-dev
 #APTGETSOURCE libminizip-dev
 #autoreconf -i
-#CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR}
-
+#./configure --prefix ${WORKDIR}
 #high perf version
 GITCLONE https://github.com/nmoinvaz/minizip.git minizip master
 ${CMAKE} \
--DCMAKE_CXX_FLAGS="$MYCFLAGS" \
--DCMAKE_C_FLAGS="$MYCFLAGS" \
+-DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
+-DCMAKE_C_FLAGS="${MYCFLAGS}" \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+-DMZ_COMPAT=ON \
+-DMZ_COMPAT_VERSION=110 \
 -DMZ_LIBBSD=OFF \
 -DMZ_PKCRYPT=OFF \
 -DMZ_SIGNING=OFF \
 -DMZ_WZAES=OFF \
+-DMZ_BZIP2=OFF \
+-DMZ_ZSTD=OFF \
 -DZLIB_LIBRARY=${LIBDIR}/libz.a \
--DZLIB_INCLUDE_DIR:PATH=${INCLUDEDIR} \
+-DZLIB_INCLUDE_DIR=${INCLUDEDIR} \
+-DLIBLZMA_LIBRARIES=${LIBDIR}/liblzma.a \
+-DLIBLZMA_STATIC_LIBRARIES=${LIBDIR}/liblzma.a \
+-DLIBLZMA_INCLUDEDIR=${INCLUDEDIR} \
+-DLIBLZMA_liblzma_INCLUDEDIR=${INCLUDEDIR} \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
+-DINSTALL_INC_DIR=${INCLUDEDIR}/minizip \
 .
 
 
@@ -162,4 +171,3 @@ $MAKE install
 cd ${WORKDIR}
 rm -rf ${WORKDIR}/download
 rm -rf ${WORKDIR}/tmp
-
