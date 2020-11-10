@@ -95,7 +95,8 @@ ${MAKE} install
 
 
 # libunwind
-APTGETSOURCE libunwind-dev
+#APTGETSOURCE libunwind-dev
+WGET http://download.savannah.nongnu.org/releases/libunwind/libunwind-1.4.0.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --enable-shared=no --enable-static=yes --prefix ${WORKDIR}
 
 ${MAKE}
@@ -154,7 +155,7 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --disable-xz  \
 --disable-xzdec  \
 --disable-scripts  \
---disable-doc
+--disable-doc \
 #--disable-lzmadec 
 #--disable-lzmainfo
 #--disable-lzma-links

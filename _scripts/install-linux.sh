@@ -17,7 +17,8 @@ apt -y install make cmake p7zip-full ninja-build \
 	vim \
 	dpkg-dev \
 	apt-utils \
-	pkg-config
+	pkg-config \
+	po4a
 
 
 apt-get install -y build-essential software-properties-common
