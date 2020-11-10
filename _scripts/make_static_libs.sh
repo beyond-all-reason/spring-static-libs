@@ -31,7 +31,7 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure \
 --enable-hardware-optimizations \
 --enable-unversioned-libpng-config \
 --enable-unversioned-libpng-pc \
---prefix ${WORKDIR} \
+--prefix ${WORKDIR}
 
 ${MAKE}
 ${MAKE} install
@@ -59,12 +59,12 @@ ${CMAKE} DevIL \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS} -fpermissive" \
 -DCMAKE_C_FLAGS="${MYCFLAGS} -fpermissive" \
 -DBUILD_SHARED_LIBS=0 \
--DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 -DPNG_PNG_INCLUDE_DIR=${INCLUDEDIR} -DPNG_LIBRARY_RELEASE=${LIBDIR}/libpng.a \
 -DJPEG_INCLUDE_DIR=${INCLUDEDIR} -DJPEG_LIBRARY=${LIBDIR}/libjpeg.a \
 -DTIFF_INCLUDE_DIR=${INCLUDEDIR} -DTIFF_LIBRARY_RELEASE=${LIBDIR}/libtiff.a \
 -DZLIB_INCLUDE_DIR=${INCLUDEDIR} -DZLIB_LIBRARY_RELEASE=${LIBDIR}/libz.a \
--DGLUT_INCLUDE_DIR=${INCLUDEDIR}
+-DGLUT_INCLUDE_DIR=${INCLUDEDIR} \
+-DCMAKE_INSTALL_PREFIX=${WORKDIR}
 
 ${MAKE}
 ${MAKE} install
@@ -78,19 +78,22 @@ ${MAKE}
 ${MAKE} install
 
 # glew
-WGET https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.tgz
+#WGET https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.tgz
+WGET https://downloads.sourceforge.net/project/glew/glew/2.2.0/glew-2.2.0.tgz
 
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
 
 # openssl
-WGET https://www.openssl.org/source/openssl-1.1.1c.tar.gz
+#WGET https://www.openssl.org/source/openssl-1.1.1c.tar.gz
+WGET https://www.openssl.org/source/openssl-1.1.1h.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./config no-ssl3 no-comp no-shared no-dso no-weak-ssl-ciphers no-tests no-deprecated --prefix=${WORKDIR}
 
 ${MAKE}
 ${MAKE} install_sw
 
 # curl
-WGET https://curl.haxx.se/download/curl-7.65.3.tar.gz
+#WGET https://curl.haxx.se/download/curl-7.65.3.tar.gz
+WGET https://curl.se/download/curl-7.73.0.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --disable-shared --disable-manual --disable-dict --disable-file --disable-ftp --disable-ftps --disable-gopher --disable-imap --disable-imaps --disable-pop3 --disable-pop3s --disable-rtsp --disable-smb --disable-smbs --disable-smtp --disable-smtps --disable-telnet --disable-tftp --disable-unix-sockets --with-ssl=${WORKDIR} --prefix ${WORKDIR}
 
 ${MAKE}
@@ -139,6 +142,7 @@ $MAKE install
 #APTGETSOURCE libminizip-dev
 #autoreconf -i
 #./configure --prefix ${WORKDIR}
+
 #high perf version
 GITCLONE https://github.com/nmoinvaz/minizip.git minizip master
 ${CMAKE} \
@@ -159,8 +163,8 @@ ${CMAKE} \
 -DLIBLZMA_STATIC_LIBRARIES=${LIBDIR}/liblzma.a \
 -DLIBLZMA_INCLUDEDIR=${INCLUDEDIR} \
 -DLIBLZMA_liblzma_INCLUDEDIR=${INCLUDEDIR} \
--DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 -DINSTALL_INC_DIR=${INCLUDEDIR}/minizip \
+-DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
 
 
@@ -168,7 +172,8 @@ ${MAKE}
 ${MAKE} install
 
 # libogg-dev
-APTGETSOURCE libogg-dev
+#APTGETSOURCE libogg-dev
+WGET https://github.com/xiph/ogg/releases/download/v1.3.4/libogg-1.3.4.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --enable-shared=no \
 --enable-static=yes

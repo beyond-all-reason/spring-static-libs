@@ -13,11 +13,7 @@ export LIBDIR=${WORKDIR}/lib
 export MAKE="make -j$(nproc)"
 export CMAKE="cmake"
 export DLDIR=${WORKDIR}/download
-export MYCFLAGS="-fPIC -DPIC"
-export MYCXXFLAGS="-fPIC -DPIC ${MYCFLAGS}"
-
-export CFLAGS=${MYCFLAGS}
-export CXXFLAGS=${MYCXXFLAGS}
+export MYCFLAGS="-fcommon -fPIC -DPIC"
 
 export UBUNTU_MAJORVER=$(sed -n 's/^DISTRIB_RELEASE=//p' /etc/lsb-release | cut -d'.' -f1)
 
