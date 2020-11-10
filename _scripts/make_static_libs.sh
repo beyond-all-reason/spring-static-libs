@@ -55,7 +55,9 @@ ${MAKE} install
 # libIL (DevIL)
 #WGET https://api.github.com/repos/spring/DevIL/tarball/d46aa9989f502b89de06801925d20e53d220c1b4
 WGET https://downloads.sourceforge.net/project/openil/DevIL/1.8.0/DevIL-1.8.0.tar.gz
-${CMAKE} DevIL \
+cd DevIL
+cd src-IL
+${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS} -fpermissive" \
 -DCMAKE_C_FLAGS="${MYCFLAGS} -fpermissive" \
 -DBUILD_SHARED_LIBS=0 \
@@ -64,7 +66,29 @@ ${CMAKE} DevIL \
 -DTIFF_INCLUDE_DIR=${INCLUDEDIR} -DTIFF_LIBRARY_RELEASE=${LIBDIR}/libtiff.a \
 -DZLIB_INCLUDE_DIR=${INCLUDEDIR} -DZLIB_LIBRARY_RELEASE=${LIBDIR}/libz.a \
 -DGLUT_INCLUDE_DIR=${INCLUDEDIR} \
--DCMAKE_INSTALL_PREFIX=${WORKDIR}
+-DCMAKE_INSTALL_PREFIX=${WORKDIR} \
+
+${MAKE}
+${MAKE} install
+
+cd ../src-ILU
+sed -i "s/ILU SHARED/ILU/g" CMakeLists.txt
+${CMAKE} \
+-DCMAKE_CXX_FLAGS="${MYCFLAGS} -fpermissive" \
+-DCMAKE_C_FLAGS="${MYCFLAGS} -fpermissive" \
+-DCMAKE_INSTALL_PREFIX=${WORKDIR} \
+.
+
+${MAKE}
+${MAKE} install
+
+cd ../src-ILUT
+sed -i "s/ILUT SHARED/ILUT/g" CMakeLists.txt
+${CMAKE} \
+-DCMAKE_CXX_FLAGS="${MYCFLAGS} -fpermissive" \
+-DCMAKE_C_FLAGS="${MYCFLAGS} -fpermissive" \
+-DCMAKE_INSTALL_PREFIX=${WORKDIR} \
+.
 
 ${MAKE}
 ${MAKE} install
