@@ -24,8 +24,18 @@ ${MAKE} install
 
 # libpng
 WGET https://downloads.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz
-CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ${MAKE} -f scripts/makefile.linux ZLIBLIB=${LIBDIR} ZLIBINC=${INCLUDEDIR} prefix=${WORKDIR}
-${MAKE} -f scripts/makefile.linux prefix=${WORKDIR} install
+CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure \
+--enable-shared=no \
+--enable-static=yes \
+--enable-intel-sse \
+--enable-hardware-optimizations \
+--enable-unversioned-libpng-config \
+--enable-unversioned-libpng-pc \
+--prefix ${WORKDIR} \
+
+${MAKE}
+${MAKE} install
+
 
 
 # libjpeg
