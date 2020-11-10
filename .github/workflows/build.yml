@@ -1,16 +1,16 @@
 name: Build Linux-64 Static Libs
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
+#  push:
+#    branches:
+#      - master
 
 jobs:
   build:
     name: Ubuntu-${{ matrix.config.distro }}
     runs-on: ${{ matrix.config.runs-on }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         config:
         - {

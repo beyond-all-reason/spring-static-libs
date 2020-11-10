@@ -18,7 +18,8 @@ apt -y install make cmake p7zip-full ninja-build \
 	dpkg-dev \
 	apt-utils \
 	pkg-config \
-	po4a
+	po4a \
+	autopoint
 
 
 apt-get install -y build-essential software-properties-common

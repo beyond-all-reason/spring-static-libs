@@ -1,0 +1,37 @@
+name: Compact Branches
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Compact Branches
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install --fix-missing -y git
+
+      - name: Compact Branches
+        run: |
+          git clone --recursive https://github.com/${GITHUB_REPOSITORY}.git -b master master
+          cd master
+
+          VERSIONED_BRANCHES=$(git branch -r | grep '[0-9]\+\.[0-9]\+')
+          cd ..
+
+          for BRANCH in ${VERSIONED_BRANCHES}; do
+            LOCAL_BRANCH=$(echo $BRANCH | cut -d'/' -f2)
+            git clone --recursive https://github.com/${GITHUB_REPOSITORY}.git -b $LOCAL_BRANCH $LOCAL_BRANCH
+            cd $LOCAL_BRANCH
+            git checkout --orphan temp_branch
+            git config --local user.email "action@github.com"
+            git config --local user.name  "GitHub Action"
+            git add -A .
+            git commit -m "Github Action Compaction"
+            git branch -D $LOCAL_BRANCH
+            git branch -m $LOCAL_BRANCH
+            git push --force https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git $LOCAL_BRANCH
+            cd ..
+          done

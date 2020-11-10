@@ -11,8 +11,8 @@ GITCLONE https://github.com/cloudflare/zlib.git zlib gcc.amd64
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
 -DCMAKE_C_FLAGS="${MYCFLAGS}" \
--DBUILD_SHARED_LIBS=OFF \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+-DBUILD_SHARED_LIBS=OFF \
 -DENABLE_ASSEMBLY=PCLMUL \
 -DSKIP_CPUID_CHECK=ON \
 -DUSE_STATIC_RUNTIME=ON \
@@ -60,6 +60,7 @@ cd src-IL
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS} -fpermissive" \
 -DCMAKE_C_FLAGS="${MYCFLAGS} -fpermissive" \
+-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DBUILD_SHARED_LIBS=0 \
 -DPNG_PNG_INCLUDE_DIR=${INCLUDEDIR} -DPNG_LIBRARY_RELEASE=${LIBDIR}/libpng.a \
 -DJPEG_INCLUDE_DIR=${INCLUDEDIR} -DJPEG_LIBRARY=${LIBDIR}/libjpeg.a \
@@ -74,8 +75,9 @@ ${MAKE} install
 cd ../src-ILU
 sed -i "s/ILU SHARED/ILU/g" CMakeLists.txt
 ${CMAKE} \
--DCMAKE_CXX_FLAGS="${MYCFLAGS} -fpermissive" \
--DCMAKE_C_FLAGS="${MYCFLAGS} -fpermissive" \
+-DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
+-DCMAKE_C_FLAGS="${MYCFLAGS}" \
+-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
 
@@ -85,8 +87,9 @@ ${MAKE} install
 cd ../src-ILUT
 sed -i "s/ILUT SHARED/ILUT/g" CMakeLists.txt
 ${CMAKE} \
--DCMAKE_CXX_FLAGS="${MYCFLAGS} -fpermissive" \
--DCMAKE_C_FLAGS="${MYCFLAGS} -fpermissive" \
+-DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
+-DCMAKE_C_FLAGS="${MYCFLAGS}" \
+-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
 
@@ -103,10 +106,16 @@ ${MAKE}
 ${MAKE} install
 
 # glew
-#WGET https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.tgz
 WGET https://downloads.sourceforge.net/project/glew/glew/2.2.0/glew-2.2.0.tgz
+${CMAKE} \
+-DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
+-DCMAKE_C_FLAGS="${MYCFLAGS}" \
+-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+-DCMAKE_INSTALL_PREFIX=${WORKDIR} \
+-DOpenGL_GL_PREFERENCE=GLVND \
+build/cmake
 
-CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
+${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
 
 # openssl
 #WGET https://www.openssl.org/source/openssl-1.1.1c.tar.gz
