@@ -63,7 +63,10 @@ update-alternatives \
 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-$VER
 
 update-alternatives \
---install /usr/bin/c++ c++ /usr/bin/gcc-$VER 60
+--install /usr/bin/c++ c++ /usr/bin/g++-$VER 60
+
+update-alternatives \
+--install /usr/bin/cc cc /usr/bin/gcc-$VER 60
 
 sed -i 's/# deb-src/deb-src/g' /etc/apt/sources.list
 apt update

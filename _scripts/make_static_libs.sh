@@ -36,7 +36,11 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure \
 ${MAKE}
 ${MAKE} install
 
+# libgif
+WGET https://downloads.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz
 
+CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ${MAKE}
+${MAKE} install PREFIX=${WORKDIR}
 
 # libjpeg
 WGET http://www.ijg.org/files/jpegsrc.v9d.tar.gz
