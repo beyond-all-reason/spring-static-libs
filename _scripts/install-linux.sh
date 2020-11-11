@@ -3,16 +3,10 @@
 set -e
 source $(dirname $0)/make_static_libs_common.sh
 
-apt update
+apt update -y
 apt -y install make cmake p7zip-full ninja-build \
-	libxmu-dev libxi-dev \
-	libopenal-dev libvorbis-dev \
-	libogg-dev libsdl2-dev libfreetype6-dev libfontconfig1-dev \
-	freeglut3-dev libgif-dev \
-	pwgen \
-	autossh \
-	libboost-test-dev \
-	chrpath \
+	freeglut3-dev \
+	libogg-dev \
 	wget \
 	vim \
 	dpkg-dev \
@@ -20,7 +14,6 @@ apt -y install make cmake p7zip-full ninja-build \
 	pkg-config \
 	po4a \
 	autopoint
-
 
 apt-get install -y build-essential software-properties-common
 
@@ -69,4 +62,4 @@ update-alternatives \
 --install /usr/bin/cc cc /usr/bin/gcc-$VER 60
 
 sed -i 's/# deb-src/deb-src/g' /etc/apt/sources.list
-apt update
+apt update -y
