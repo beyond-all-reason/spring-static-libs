@@ -7,13 +7,25 @@ if [ $# -eq 0 ]; then
 fi
 
 export WORKDIR=$1
+export ARCHINPUT=$2
 export TMPDIR=${WORKDIR}/tmp
 export INCLUDEDIR=${WORKDIR}/include
 export LIBDIR=${WORKDIR}/lib
 export MAKE="make -j$(nproc)"
 export CMAKE="cmake"
 export DLDIR=${WORKDIR}/download
-export MYCFLAGS="-fcommon -fPIC -DPIC"
+
+if [[ $ARCHINPUT == "" || $ARCHINPUT = "generic" ]]; then
+	MYARCH_FLAGS="-mtune=generic -msse -mno-sse2 -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-avx -mno-fma -mno-fma4 -mno-xop -mno-lwp -mno-avx2 "
+else
+	MYARCH_FLAGS="-march=$ARCHINPUT -mtune=$ARCHINPUT"
+fi
+
+MYARCH_FLAGS="$MYARCH_FLAGS -mfpmath=sse"
+
+#export MYARCH_FLAGS
+export MYCFLAGS="-fcommon -fPIC -DPIC -O3 $MYARCH_FLAGS"
+echo "Building with MYCFLAGS: $MYCFLAGS"
 
 export UBUNTU_MAJORVER=$(sed -n 's/^DISTRIB_RELEASE=//p' /etc/lsb-release | cut -d'.' -f1)
 

@@ -4,13 +4,18 @@ on:
 #  push:
 #    branches:
 #      - master
+    inputs:
+      archtune-flags:
+        description: Arch/Tune Flags
+        required: false
+        default: "generic"
 
 jobs:
   build:
     name: Ubuntu-${{ matrix.config.distro }}
     runs-on: ${{ matrix.config.runs-on }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         config:
         - {
@@ -65,7 +70,7 @@ jobs:
 
       - name: Execute make_static_libs.sh
         run: |
-          sudo ./_scripts/make_static_libs.sh ${{ github.workspace }}/spring-static-libs
+          sudo ./_scripts/make_static_libs.sh ${{ github.workspace }}/spring-static-libs "${{ github.event.inputs.archtune-flags }}"
         working-directory: ${{ github.workspace }}/spring-static-libs-scripts
         shell: bash
 
