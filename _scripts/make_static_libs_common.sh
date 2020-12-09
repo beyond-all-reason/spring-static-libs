@@ -15,17 +15,24 @@ export MAKE="make -j$(nproc)"
 export CMAKE="cmake"
 export DLDIR=${WORKDIR}/download
 
-if [[ $ARCHINPUT == "" || $ARCHINPUT = "generic" ]]; then
-	MYARCH_FLAGS="-mtune=generic -msse -mno-sse2 -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-avx -mno-fma -mno-fma4 -mno-xop -mno-lwp -mno-avx2 "
+if [[ $ARCHINPUT == "" ]]; then
+    ARCHINPUT="generic"
+fi
+
+if [[ $ARCHINPUT = "generic" ]]; then
+    MYARCH_FLAGS="-march=nehalem -mtune=nehalem -msse -mno-sse2 -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-avx -mno-fma -mno-fma4 -mno-xop -mno-lwp -mno-avx2" #mtune=generic is bugged somehow and sometimes emits unwanted instructions no matter -mno-*
 else
-	MYARCH_FLAGS="-march=$ARCHINPUT -mtune=$ARCHINPUT"
+    MYARCH_FLAGS="-march=$ARCHINPUT -mtune=$ARCHINPUT"
 fi
 
 MYARCH_FLAGS="$MYARCH_FLAGS -mfpmath=sse"
 
-#export MYARCH_FLAGS
+
 export MYCFLAGS="-fcommon -fPIC -DPIC -O3 $MYARCH_FLAGS"
 echo "Building with MYCFLAGS: $MYCFLAGS"
+
+export MYRWDIFLAGS="-ggdb3 -DNDEBUG"
+echo "Building with MYRWDIFLAGS: $MYRWDIFLAGS"
 
 export UBUNTU_MAJORVER=$(sed -n 's/^DISTRIB_RELEASE=//p' /etc/lsb-release | cut -d'.' -f1)
 

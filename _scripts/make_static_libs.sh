@@ -4,20 +4,41 @@ set -e
 source $(dirname $0)/make_static_libs_common.sh
 
 # zlib
-#WGET https://www.zlib.net/zlib-1.2.11.tar.gz
-#./configure --prefix ${WORKDIR}
-# high perf zlib version
-GITCLONE https://github.com/cloudflare/zlib.git zlib gcc.amd64
-${CMAKE} \
--DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
--DCMAKE_C_FLAGS="${MYCFLAGS}" \
--DCMAKE_BUILD_TYPE=RelWithDebInfo \
--DBUILD_SHARED_LIBS=OFF \
--DENABLE_ASSEMBLY=PCLMUL \
--DSKIP_CPUID_CHECK=ON \
--DUSE_STATIC_RUNTIME=ON \
--DCMAKE_INSTALL_PREFIX=${WORKDIR} \
-.
+if [[ $ARCHINPUT = "generic" || $ARCHINPUT = "nehalem" ]]; then
+    WGET https://www.zlib.net/zlib-1.2.11.tar.gz
+    CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --static --prefix ${WORKDIR}
+else
+    # high perf zlib version
+    #GITCLONE https://github.com/cloudflare/zlib.git zlib gcc.amd64
+    #${CMAKE} \
+    #-DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
+    #-DCMAKE_C_FLAGS="${MYCFLAGS}" \
+    #-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
+    #-DCMAKE_C_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
+    #-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    #-DBUILD_SHARED_LIBS=OFF \
+    #-DENABLE_ASSEMBLY=PCLMUL \
+    #-DSKIP_CPUID_CHECK=ON \
+    #-DUSE_STATIC_RUNTIME=ON \
+    #-DCMAKE_INSTALL_PREFIX=${WORKDIR} \
+    #.
+    # slighty less higher perf zlib version
+    GITCLONE https://github.com/zlib-ng/zlib-ng.git zlib 1.9.9-b1
+    ${CMAKE} \
+    -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
+    -DCMAKE_C_FLAGS="${MYCFLAGS}" \
+    -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
+    -DCMAKE_C_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DWITH_SSE2=ON \
+    -DWITH_SSE4=ON \
+    -DWITH_SSSE3=ON \
+    -DWITH_AVX2=ON \
+    -DZLIB_COMPAT=ON \
+    -DZLIB_ENABLE_TESTS=OFF \
+    -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
+    .
+fi
 
 ${MAKE}
 ${MAKE} install
@@ -27,6 +48,8 @@ WGET https://downloads.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
 -DCMAKE_C_FLAGS="${MYCFLAGS}" \
+-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
+-DCMAKE_C_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DPNG_SHARED=OFF \
 -DPNG_BUILD_ZLIB=ON \
@@ -40,8 +63,8 @@ ${MAKE} install
 
 # libgif
 WGET https://downloads.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz
-
-CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ${MAKE}
+sed -ie "s/OFLAGS  = -O2/OFLAGS=${MYCFLAGS}/g"  Makefile
+${MAKE}
 ${MAKE} install PREFIX=${WORKDIR}
 
 # libjpeg
@@ -66,6 +89,8 @@ cd src-IL
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS} -fpermissive" \
 -DCMAKE_C_FLAGS="${MYCFLAGS} -fpermissive" \
+-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
+-DCMAKE_C_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DBUILD_SHARED_LIBS=0 \
 -DGIF_INCLUDE_DIR=${INCLUDEDIR} -DGIF_LIBRARY=${LIBDIR}/libgif.a \
@@ -85,6 +110,8 @@ sed -i "s/ILU SHARED/ILU/g" CMakeLists.txt
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
 -DCMAKE_C_FLAGS="${MYCFLAGS}" \
+-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
+-DCMAKE_C_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
@@ -97,6 +124,8 @@ sed -i "s/ILUT SHARED/ILUT/g" CMakeLists.txt
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
 -DCMAKE_C_FLAGS="${MYCFLAGS}" \
+-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
+-DCMAKE_C_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
@@ -118,6 +147,8 @@ WGET https://downloads.sourceforge.net/project/glew/glew/2.2.0/glew-2.2.0.tgz
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
 -DCMAKE_C_FLAGS="${MYCFLAGS}" \
+-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
+-DCMAKE_C_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 -DOpenGL_GL_PREFERENCE=GLVND \
@@ -126,8 +157,8 @@ build/cmake
 ${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
 
 # openssl
-#WGET https://www.openssl.org/source/openssl-1.1.1c.tar.gz
-WGET https://www.openssl.org/source/openssl-1.1.1h.tar.gz
+#WGET https://www.openssl.org/source/openssl-1.1.1h.tar.gz
+WGET https://github.com/openssl/openssl/archive/OpenSSL_1_1_1i.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./config no-ssl3 no-comp no-shared no-dso no-weak-ssl-ciphers no-tests no-deprecated --prefix=${WORKDIR}
 
 ${MAKE}
@@ -173,9 +204,9 @@ ${MAKE} install
 
 #APTGETSOURCE liblzma-dev
 WGET https://downloads.sourceforge.net/project/lzmautils/xz-5.2.5.tar.gz
-if [ -f autogen.sh ]; then
-  ./autogen.sh
-fi
+#if [ -f autogen.sh ]; then
+#  ./autogen.sh
+#fi
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --enable-shared=no \
 --enable-static=yes \
@@ -200,6 +231,8 @@ GITCLONE https://github.com/nmoinvaz/minizip.git minizip master
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
 -DCMAKE_C_FLAGS="${MYCFLAGS}" \
+-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
+-DCMAKE_C_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DMZ_COMPAT=ON \
 -DMZ_COMPAT_VERSION=110 \

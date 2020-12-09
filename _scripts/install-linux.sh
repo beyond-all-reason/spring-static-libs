@@ -4,7 +4,8 @@ set -e
 source $(dirname $0)/make_static_libs_common.sh
 
 apt update -y
-apt -y install make cmake p7zip-full ninja-build \
+apt -y install make cmake ninja-build \
+	p7zip-full \
 	freeglut3-dev \
 	libogg-dev \
 	wget \
@@ -15,9 +16,10 @@ apt -y install make cmake p7zip-full ninja-build \
 	po4a \
 	autoconf \
 	libtool \
-	autopoint
+	autopoint \
+	xmlto
 
-apt-get install -y build-essential software-properties-common
+apt install -y build-essential software-properties-common
 
 apt remove -y snapd || true
 apt remove -y gcc g++ || true
