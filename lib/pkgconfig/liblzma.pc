@@ -1,0 +1,19 @@
+#
+# Author: Lasse Collin
+#
+# This file has been put into the public domain.
+# You can do whatever you want with this file.
+#
+
+prefix=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs
+exec_prefix=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs
+libdir=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib
+includedir=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/include
+
+Name: liblzma
+Description: General purpose data compression library
+URL: https://tukaani.org/xz/
+Version: 5.2.5
+Cflags: -I${includedir}
+Libs: -L${libdir} -llzma
+Libs.private: -pthread -lpthread
