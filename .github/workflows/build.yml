@@ -26,10 +26,6 @@ jobs:
             distro: '18.04',
             runs-on: 'ubuntu-18.04'
           }
-        - {
-            distro: '16.04',
-            runs-on: 'ubuntu-16.04'
-          }
     steps:
       - name: Debug Action
         uses: hmarr/debug-action@v1.0.0
