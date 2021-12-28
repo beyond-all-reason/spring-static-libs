@@ -257,6 +257,7 @@ ${MAKE}
 ${MAKE} install
 
 # SDL2
+: '
 GITCLONE https://github.com/libsdl-org/SDL SDL release-2.0.18
 mkdir build
 cd build
@@ -348,7 +349,7 @@ ${CMAKE} \
 
 ${MAKE}
 ${MAKE} install
-
+'
 
 # Finalize()
 cd ${WORKDIR}
