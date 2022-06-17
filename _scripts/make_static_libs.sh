@@ -163,10 +163,21 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./config no-ssl3 no-comp no-shared no-dso no
 ${MAKE}
 ${MAKE} install_sw
 
+# nghttp2
+WGET https://github.com/nghttp2/nghttp2/releases/download/v1.47.0/nghttp2-1.47.0.tar.gz
+CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --enable-lib-only --prefix ${WORKDIR}
+
+${MAKE}
+${MAKE} install
+
 # curl
-#WGET https://curl.haxx.se/download/curl-7.65.3.tar.gz
-WGET https://curl.se/download/curl-7.73.0.tar.gz
-CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --disable-shared --disable-manual --disable-dict --disable-file --disable-ftp --disable-ftps --disable-gopher --disable-imap --disable-imaps --disable-pop3 --disable-pop3s --disable-rtsp --disable-smb --disable-smbs --disable-smtp --disable-smtps --disable-telnet --disable-tftp --disable-unix-sockets --with-ssl=${WORKDIR} --prefix ${WORKDIR}
+WGET https://curl.se/download/curl-7.83.1.tar.gz
+CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --disable-shared --disable-manual \
+  --disable-dict --disable-file --disable-ftp --disable-ftps --disable-gopher \
+  --disable-imap --disable-imaps --disable-pop3 --disable-pop3s --disable-rtsp \
+  --disable-smb --disable-smbs --disable-smtp --disable-smtps --disable-telnet \
+  --disable-tftp --disable-unix-sockets --with-nghttp2=${WORKDIR} \
+  --with-zlib=${WORKDIR} --with-ssl=${WORKDIR} --prefix ${WORKDIR}
 
 ${MAKE}
 ${MAKE} install
