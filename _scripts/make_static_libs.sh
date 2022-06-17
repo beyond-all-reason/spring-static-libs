@@ -157,8 +157,7 @@ build/cmake
 ${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
 
 # openssl
-#WGET https://www.openssl.org/source/openssl-1.1.1h.tar.gz
-WGET https://github.com/openssl/openssl/archive/OpenSSL_1_1_1i.tar.gz
+WGET https://www.openssl.org/source/openssl-1.1.1o.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./config no-ssl3 no-comp no-shared no-dso no-weak-ssl-ciphers no-tests no-deprecated --prefix=${WORKDIR}
 
 ${MAKE}
