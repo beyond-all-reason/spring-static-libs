@@ -6,7 +6,7 @@ includedir=/home/runner/work/spring-static-libs/spring-static-libs/spring-static
 
 Name: minizip
 Description: Minizip zip file manipulation library
-Version: 3.0.4
+Version: 3.0.6
 
 Requires: zlib
 Libs: -L${libdir} -L${sharedlibdir} -lminizip

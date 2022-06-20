@@ -10,7 +10,7 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at https://curl.haxx.se/docs/copyright.html.
+# are also available at https://curl.se/docs/copyright.html.
 #
 # You may opt to use, copy, modify, merge, publish, distribute and/or sell
 # copies of the Software, and permit persons to whom the Software is
@@ -84,7 +84,7 @@ while test $# -gt 0; do
         ;;
 
     --feature|--features)
-        for feature in AsynchDNS HTTPS-proxy IPv6 NTLM NTLM_WB SSL TLS-SRP libz ""; do
+        for feature in AsynchDNS HSTS HTTP2 HTTPS-proxy IPv6 Largefile NTLM NTLM_WB SSL TLS-SRP alt-svc libz ""; do
             test -n "$feature" && echo "$feature"
         done
         ;;
@@ -96,7 +96,7 @@ while test $# -gt 0; do
         ;;
 
     --version)
-        echo libcurl 7.73.0
+        echo libcurl 7.83.1
         exit 0
         ;;
 
@@ -108,11 +108,11 @@ while test $# -gt 0; do
         # dash as that's used for things like version 1.2.3-CVS
         cpatch=`echo $checkfor | cut -d. -f3 | cut -d- -f1`
 
-        vmajor=`echo 7.73.0 | cut -d. -f1`
-        vminor=`echo 7.73.0 | cut -d. -f2`
+        vmajor=`echo 7.83.1 | cut -d. -f1`
+        vminor=`echo 7.83.1 | cut -d. -f2`
         # when extracting the patch part we strip off everything after a
         # dash as that's used for things like version 1.2.3-CVS
-        vpatch=`echo 7.73.0 | cut -d. -f3 | cut -d- -f1`
+        vpatch=`echo 7.83.1 | cut -d. -f3 | cut -d- -f1`
 
         if test "$vmajor" -gt "$cmajor"; then
             exit 0;
@@ -128,12 +128,12 @@ while test $# -gt 0; do
             fi
         fi
 
-        echo "requested version $checkfor is newer than existing 7.73.0"
+        echo "requested version $checkfor is newer than existing 7.83.1"
         exit 1
         ;;
 
     --vernum)
-        echo 074900
+        echo 075301
         exit 0
         ;;
 
@@ -161,7 +161,7 @@ while test $# -gt 0; do
            CURLLIBDIR=""
         fi
         if test "Xno" = "Xno"; then
-          echo ${CURLLIBDIR}-lcurl -lssl -lz -lcrypto -ldl -lpthread
+          echo ${CURLLIBDIR}-lcurl -lnghttp2 -lssl -lcrypto -lz -ldl -lpthread -pthread
         else
           echo ${CURLLIBDIR}-lcurl
         fi
@@ -172,7 +172,7 @@ while test $# -gt 0; do
 
     --static-libs)
         if test "Xyes" != "Xno" ; then
-          echo ${exec_prefix}/lib/libcurl.a -L/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib -lssl -lz -lcrypto -ldl -lpthread
+          echo ${exec_prefix}/lib/libcurl.a -L/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib -L/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib -L/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib -lnghttp2 -lssl -lcrypto -lz -ldl -lpthread -pthread
         else
           echo "curl was built with static libraries disabled" >&2
           exit 1
@@ -180,7 +180,7 @@ while test $# -gt 0; do
         ;;
 
     --configure)
-        echo " '--disable-shared' '--disable-manual' '--disable-dict' '--disable-file' '--disable-ftp' '--disable-ftps' '--disable-gopher' '--disable-imap' '--disable-imaps' '--disable-pop3' '--disable-pop3s' '--disable-rtsp' '--disable-smb' '--disable-smbs' '--disable-smtp' '--disable-smtps' '--disable-telnet' '--disable-tftp' '--disable-unix-sockets' '--with-ssl=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs' '--prefix' '/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs' 'CFLAGS=-fcommon -fPIC -DPIC -O3 -march=nehalem -mtune=nehalem -msse -mno-sse2 -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-avx -mno-fma -mno-fma4 -mno-xop -mno-lwp -mno-avx2 -mfpmath=sse'"
+        echo " '--disable-shared' '--disable-manual' '--disable-dict' '--disable-file' '--disable-ftp' '--disable-ftps' '--disable-gopher' '--disable-imap' '--disable-imaps' '--disable-pop3' '--disable-pop3s' '--disable-rtsp' '--disable-smb' '--disable-smbs' '--disable-smtp' '--disable-smtps' '--disable-telnet' '--disable-tftp' '--disable-unix-sockets' '--with-nghttp2=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs' '--with-zlib=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs' '--with-ssl=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs' '--prefix' '/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs' 'CFLAGS=-fcommon -fPIC -DPIC -O3 -march=nehalem -mtune=nehalem -msse -mno-sse2 -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-avx -mno-fma -mno-fma4 -mno-xop -mno-lwp -mno-avx2 -mfpmath=sse'"
         ;;
 
     *)
