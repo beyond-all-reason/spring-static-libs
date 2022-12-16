@@ -5,7 +5,7 @@ source $(dirname $0)/make_static_libs_common.sh
 
 # zlib
 if [[ $ARCHINPUT = "generic" || $ARCHINPUT = "nehalem" ]]; then
-    WGET https://www.zlib.net/zlib-1.2.12.tar.gz
+    WGET https://www.zlib.net/zlib-1.2.13.tar.gz
     CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --static --prefix ${WORKDIR}
 else
     # high perf zlib version
@@ -179,21 +179,21 @@ build/cmake
 ${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
 
 # openssl
-WGET https://www.openssl.org/source/openssl-1.1.1o.tar.gz
+WGET https://www.openssl.org/source/openssl-1.1.1s.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./config no-ssl3 no-comp no-shared no-dso no-weak-ssl-ciphers no-tests no-deprecated --prefix=${WORKDIR}
 
 ${MAKE}
 ${MAKE} install_sw
 
 # nghttp2
-WGET https://github.com/nghttp2/nghttp2/releases/download/v1.47.0/nghttp2-1.47.0.tar.gz
+WGET https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --enable-lib-only --prefix ${WORKDIR}
 
 ${MAKE}
 ${MAKE} install
 
 # curl
-WGET https://curl.se/download/curl-7.83.1.tar.gz
+WGET https://curl.se/download/curl-7.86.0.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --disable-shared --disable-manual \
   --disable-dict --disable-file --disable-ftp --disable-ftps --disable-gopher \
   --disable-imap --disable-imaps --disable-pop3 --disable-pop3s --disable-rtsp \
