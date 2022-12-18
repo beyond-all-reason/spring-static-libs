@@ -11,17 +11,14 @@ HTTP/2.
 
 An HPACK encoder and decoder are available as a public API.
 
-An experimental high level C++ library is also available.
-
-We have Python bindings of this library, but we do not have full
-code coverage yet.
-
 Development Status
 ------------------
 
-We have implemented `RFC 7540 <https://tools.ietf.org/html/rfc7540>`_
-HTTP/2 and `RFC 7541 <https://tools.ietf.org/html/rfc7541>`_ HPACK -
-Header Compression for HTTP/2
+nghttp2 was originally developed based on `RFC 7540
+<https://tools.ietf.org/html/rfc7540>`_ HTTP/2 and `RFC 7541
+<https://tools.ietf.org/html/rfc7541>`_ HPACK - Header Compression for
+HTTP/2.  Now we are updating our code to implement `RFC 9113
+<https://datatracker.ietf.org/doc/html/rfc9113>`_.
 
 The nghttp2 code base was forked from the spdylay
 (https://github.com/tatsuhiro-t/spdylay) project.
@@ -106,26 +103,18 @@ To mitigate heap fragmentation in long running server programs
      Alpine Linux currently does not support malloc replacement
      due to musl limitations. See details in issue `#762 <https://github.com/nghttp2/nghttp2/issues/762>`_.
 
-libnghttp2_asio C++ library requires the following packages:
+libnghttp2_asio C++ library (deprecated, has moved to
+https://github.com/nghttp2/nghttp2-asio) requires the following
+packages:
 
 * libboost-dev >= 1.54.0
 * libboost-thread-dev >= 1.54.0
 
-The Python bindings require the following packages:
+The Python bindings (deprecated) require the following packages:
 
 * cython >= 0.19
 * python >= 3.8
 * python-setuptools
-
-If you are using Ubuntu 16.04 LTS (Xenial Xerus) or Debian 8 (jessie)
-and above, run the following to install the required packages:
-
-.. code-block:: text
-
-    sudo apt-get install g++ make binutils autoconf automake autotools-dev libtool pkg-config \
-      zlib1g-dev libcunit1-dev libssl-dev libxml2-dev libev-dev libevent-dev libjansson-dev \
-      libc-ares-dev libjemalloc-dev libsystemd-dev \
-      cython python3-dev python-setuptools
 
 To enable mruby support for nghttpx, `mruby
 <https://github.com/mruby/mruby>`_ is required.  We need to build
@@ -151,11 +140,11 @@ To enable the experimental HTTP/3 support for h2load and nghttpx, the
 following libraries are required:
 
 * `OpenSSL with QUIC support
-  <https://github.com/quictls/openssl/tree/OpenSSL_1_1_1m+quic>`_; or
+  <https://github.com/quictls/openssl/tree/OpenSSL_1_1_1s+quic>`_; or
   `BoringSSL <https://boringssl.googlesource.com/boringssl/>`_ (commit
-  36a41bf0bf2dd3176f8780e09c03585351f29963)
-* `ngtcp2 <https://github.com/ngtcp2/ngtcp2>`_ >= 0.2.0
-* `nghttp3 <https://github.com/ngtcp2/nghttp3>`_ >= 0.2.0
+  b2536a2c6234496ef609e7c909936bbf828dac6d)
+* `ngtcp2 <https://github.com/ngtcp2/ngtcp2>`_ >= 0.10.0
+* `nghttp3 <https://github.com/ngtcp2/nghttp3>`_ >= 0.7.0
 
 Use ``--enable-http3`` configure option to enable HTTP/3 feature for
 h2load and nghttpx.
@@ -170,7 +159,7 @@ Use ``--with-libbpf`` configure option to build eBPF program.
 libelf-dev is needed to build libbpf.
 
 For Ubuntu 20.04, you can build libbpf from `the source code
-<https://github.com/libbpf/libbpf/releases/tag/v0.7.0>`_.  nghttpx
+<https://github.com/libbpf/libbpf/releases/tag/v1.0.1>`_.  nghttpx
 requires eBPF program for reloading its configuration and hot swapping
 its executable.
 
@@ -223,6 +212,18 @@ language features.
    specified, pkg-config is not used for detection, and user is
    responsible to specify the correct values to these variables.  For
    complete list of these variables, run ``./configure -h``.
+
+If you are using Ubuntu 22.04 LTS, run the following to install the
+required packages:
+
+.. code-block:: text
+
+    sudo apt-get install g++ clang make binutils autoconf automake \
+      autotools-dev libtool pkg-config \
+      zlib1g-dev libcunit1-dev libssl-dev libxml2-dev libev-dev \
+      libevent-dev libjansson-dev \
+      libc-ares-dev libjemalloc-dev libsystemd-dev \
+      ruby-dev bison libelf-dev
 
 Building nghttp2 from release tar archive
 -----------------------------------------
@@ -355,7 +356,7 @@ Build custom OpenSSL:
 
 .. code-block:: text
 
-   $ git clone --depth 1 -b OpenSSL_1_1_1m+quic https://github.com/quictls/openssl
+   $ git clone --depth 1 -b OpenSSL_1_1_1s+quic https://github.com/quictls/openssl
    $ cd openssl
    $ ./config --prefix=$PWD/build --openssldir=/etc/ssl
    $ make -j$(nproc)
@@ -366,7 +367,7 @@ Build nghttp3:
 
 .. code-block:: text
 
-   $ git clone --depth 1 -b v0.2.0 https://github.com/ngtcp2/nghttp3
+   $ git clone --depth 1 -b v0.7.1 https://github.com/ngtcp2/nghttp3
    $ cd nghttp3
    $ autoreconf -i
    $ ./configure --prefix=$PWD/build --enable-lib-only
@@ -378,7 +379,7 @@ Build ngtcp2:
 
 .. code-block:: text
 
-   $ git clone --depth 1 -b v0.2.0 https://github.com/ngtcp2/ngtcp2
+   $ git clone --depth 1 -b v0.11.0 https://github.com/ngtcp2/ngtcp2
    $ cd ngtcp2
    $ autoreconf -i
    $ ./configure --prefix=$PWD/build --enable-lib-only \
@@ -392,7 +393,7 @@ from source:
 
 .. code-block:: text
 
-   $ git clone --depth 1 -b v0.7.0 https://github.com/libbpf/libbpf
+   $ git clone --depth 1 -b v1.0.1 https://github.com/libbpf/libbpf
    $ cd libbpf
    $ PREFIX=$PWD/build make -C src install
    $ cd ..
@@ -407,7 +408,7 @@ Build nghttp2:
    $ autoreconf -i
    $ ./configure --with-mruby --with-neverbleed --enable-http3 --with-libbpf \
          --disable-python-bindings \
-         CC=clang-12 CXX=clang++-12 \
+         CC=clang-14 CXX=clang++-14 \
          PKG_CONFIG_PATH="$PWD/../openssl/build/lib/pkgconfig:$PWD/../nghttp3/build/lib/pkgconfig:$PWD/../ngtcp2/build/lib/pkgconfig:$PWD/../libbpf/build/lib64/pkgconfig" \
          LDFLAGS="$LDFLAGS -Wl,-rpath,$PWD/../openssl/build/lib -Wl,-rpath,$PWD/../libbpf/build/lib64"
    $ make -j$(nproc)
@@ -1434,6 +1435,9 @@ corresponding header set was processed.  The format is the same as
 libnghttp2_asio: High level HTTP/2 C++ library
 ----------------------------------------------
 
+libnghttp2_asio has been deprecated, and moved to
+https://github.com/nghttp2/nghttp2-asio.
+
 libnghttp2_asio is C++ library built on top of libnghttp2 and provides
 high level abstraction API to build HTTP/2 applications.  It depends
 on the Boost::ASIO library and OpenSSL.  Currently libnghttp2_asio
@@ -1530,6 +1534,8 @@ For more details, see the documentation of libnghttp2_asio.
 
 Python bindings
 ---------------
+
+Python bindings have been deprecated.
 
 The ``python`` directory contains nghttp2 Python bindings.  The
 bindings currently provide HPACK compressor and decompressor classes
