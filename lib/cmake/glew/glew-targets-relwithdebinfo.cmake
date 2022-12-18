@@ -12,8 +12,8 @@ set_target_properties(GLEW::glew PROPERTIES
   IMPORTED_SONAME_RELWITHDEBINFO "libGLEW.so.2.2"
   )
 
-list(APPEND _IMPORT_CHECK_TARGETS GLEW::glew )
-list(APPEND _IMPORT_CHECK_FILES_FOR_GLEW::glew "${_IMPORT_PREFIX}/lib/libGLEW.so.2.2.0" )
+list(APPEND _cmake_import_check_targets GLEW::glew )
+list(APPEND _cmake_import_check_files_for_GLEW::glew "${_IMPORT_PREFIX}/lib/libGLEW.so.2.2.0" )
 
 # Import target "GLEW::glew_s" for configuration "RelWithDebInfo"
 set_property(TARGET GLEW::glew_s APPEND PROPERTY IMPORTED_CONFIGURATIONS RELWITHDEBINFO)
@@ -22,8 +22,8 @@ set_target_properties(GLEW::glew_s PROPERTIES
   IMPORTED_LOCATION_RELWITHDEBINFO "${_IMPORT_PREFIX}/lib/libGLEW.a"
   )
 
-list(APPEND _IMPORT_CHECK_TARGETS GLEW::glew_s )
-list(APPEND _IMPORT_CHECK_FILES_FOR_GLEW::glew_s "${_IMPORT_PREFIX}/lib/libGLEW.a" )
+list(APPEND _cmake_import_check_targets GLEW::glew_s )
+list(APPEND _cmake_import_check_files_for_GLEW::glew_s "${_IMPORT_PREFIX}/lib/libGLEW.a" )
 
 # Commands beyond this point should not need to know the version.
 set(CMAKE_IMPORT_FILE_VERSION)
