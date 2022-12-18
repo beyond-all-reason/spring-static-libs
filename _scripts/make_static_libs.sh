@@ -61,28 +61,6 @@ ${CMAKE} \
 ${MAKE}
 ${MAKE} install
 
-# freetype
-GITCLONE https://git.savannah.nongnu.org/git/freetype/freetype2.git freetype2 VER-2-12-1
-# Freetype does not allow building inside source dir
-${CMAKE} -E make_directory build
-
-${CMAKE} -E chdir build \
-${CMAKE} \
--DCMAKE_C_FLAGS="${MYCFLAGS}" \
--DZLIB_INCLUDE_DIR=${INCLUDEDIR} \
--DZLIB_LIBRARY_RELEASE=${LIBDIR}/libz.a \
--DPNG_PNG_INCLUDE_DIR=${INCLUDEDIR} \
--DPNG_LIBRARY_RELEASE=${LIBDIR}/libpng.a \
--DFT_DISABLE_BROTLI=TRUE \
--DCMAKE_INSTALL_PREFIX=${WORKDIR} \
-..
-
-${CMAKE} -E chdir build \
-${MAKE}
-
-${CMAKE} -E chdir build \
-${MAKE} install
-
 # libgif
 WGET https://downloads.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz
 sed -ie "s/OFLAGS  = -O2/OFLAGS=${MYCFLAGS}/g"  Makefile

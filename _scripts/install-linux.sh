@@ -3,13 +3,6 @@
 set -e
 source $(dirname $0)/make_static_libs_common.sh
 
-# >= 2.0 harfbuzz for freetype
-add-apt-repository -y ppa:reviczky/harfbuzz
-
-# cmake >= 3.13 required for some of the libs
-wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key -y add -
-apt-add-repository -y 'deb https://apt.kitware.com/ubuntu/ bionic main'
-
 apt update -y
 apt -y install make cmake ninja-build \
 	p7zip-full \
@@ -24,8 +17,7 @@ apt -y install make cmake ninja-build \
 	autoconf \
 	libtool \
 	autopoint \
-	xmlto \
-	libharfbuzz-dev
+	xmlto
 
 apt install -y build-essential software-properties-common
 

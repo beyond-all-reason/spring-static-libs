@@ -9,14 +9,11 @@ fi
 export WORKDIR=$1
 export ARCHINPUT=$2
 export TMPDIR=${WORKDIR}/tmp
-# Use this when testing inside a container
-# export TMPDIR=/tmp
 export INCLUDEDIR=${WORKDIR}/include
 export LIBDIR=${WORKDIR}/lib
 export MAKE="make -j$(nproc)"
 export CMAKE="cmake"
 export DLDIR=${WORKDIR}/download
-export DEBIAN_FRONTEND=noninteractive
 
 if [[ $ARCHINPUT == "" ]]; then
     ARCHINPUT="generic"
@@ -71,7 +68,7 @@ function GITCLONE {
 
   cd $(mktemp -d)
 
-  git clone --depth 1 --recursive -b $BRANCH $URL $DIR
+  git clone --recursive -b $BRANCH $URL $DIR
   cd $DIR
 }
 
