@@ -165,7 +165,7 @@ ${MAKE} install_sw
 
 # nghttp2
 WGET https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz
-CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --enable-lib-only --prefix ${WORKDIR}
+CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --enable-lib-only --disable-shared --prefix ${WORKDIR}
 
 ${MAKE}
 ${MAKE} install
