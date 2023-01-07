@@ -4,7 +4,7 @@ set -e
 source $(dirname $0)/make_static_libs_common.sh
 
 apt update -y
-apt -y install make cmake ninja-build \
+apt -y install make ninja-build \
 	p7zip-full \
 	freeglut3-dev \
 	libogg-dev \
@@ -17,7 +17,12 @@ apt -y install make cmake ninja-build \
 	autoconf \
 	libtool \
 	autopoint \
-	xmlto
+	git \
+	xmlto \
+	python3-pip
+
+pip3 install --upgrade pip
+pip3 install cmake
 
 apt install -y build-essential software-properties-common
 
