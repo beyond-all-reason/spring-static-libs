@@ -237,7 +237,7 @@ $MAKE install
 #./configure --prefix ${WORKDIR}
 
 #high perf version
-GITCLONE https://github.com/nmoinvaz/minizip.git minizip master
+GITCLONE https://github.com/nmoinvaz/minizip.git minizip 3.0.7
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
 -DCMAKE_C_FLAGS="${MYCFLAGS}" \
@@ -248,6 +248,7 @@ ${CMAKE} \
 -DMZ_COMPAT_VERSION=110 \
 -DMZ_LIBBSD=OFF \
 -DMZ_PKCRYPT=OFF \
+-DMZ_OPENSSL=OFF \
 -DMZ_SIGNING=OFF \
 -DMZ_WZAES=OFF \
 -DMZ_BZIP2=OFF \
@@ -262,9 +263,11 @@ ${CMAKE} \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
 
-
 ${MAKE}
 ${MAKE} install
+
+# Hack until https://github.com/zlib-ng/minizip-ng/pull/667 lands on master.
+sed -i 's/-lliblzma/-llzma/g' ${LIBDIR}/pkgconfig/minizip.pc
 
 # SDL2
 : '
