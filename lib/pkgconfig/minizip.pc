@@ -10,5 +10,5 @@ Version: 3.0.7
 
 Requires: zlib
 Libs: -L${libdir} -L${sharedlibdir} -lminizip
-Libs.private: -lz -lliblzma -lssl -lcrypto
+Libs.private: -lz -llzma
 Cflags: -I${includedir}

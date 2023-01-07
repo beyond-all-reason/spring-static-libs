@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_LESS "2.8.3")
    message(FATAL_ERROR "CMake >= 2.8.3 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.8.3...3.22)
+cmake_policy(VERSION 2.8.3...3.23)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -60,8 +60,7 @@ add_library(MINIZIP::minizip STATIC IMPORTED)
 
 set_target_properties(MINIZIP::minizip PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/include/minizip;/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/include/minizip"
-  INTERFACE_LINK_DIRECTORIES "/usr/lib/x86_64-linux-gnu"
-  INTERFACE_LINK_LIBRARIES "/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib/libz.a;/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib/liblzma.a;ssl;crypto"
+  INTERFACE_LINK_LIBRARIES "/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib/libz.a;/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib/liblzma.a"
 )
 
 if(CMAKE_VERSION VERSION_LESS 2.8.12)
