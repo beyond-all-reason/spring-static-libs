@@ -5,7 +5,7 @@ source $(dirname $0)/make_static_libs_common.sh
 
 # zlib
 if [[ $ARCHINPUT = "generic" || $ARCHINPUT = "nehalem" ]]; then
-    WGET https://www.zlib.net/zlib-1.2.13.tar.gz
+    WGET https://www.zlib.net/zlib-1.3.tar.gz
     CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --static --prefix ${WORKDIR}
 else
     # high perf zlib version
@@ -23,7 +23,7 @@ else
     #-DCMAKE_INSTALL_PREFIX=${WORKDIR} \
     #.
     # slighty less higher perf zlib version
-    GITCLONE https://github.com/zlib-ng/zlib-ng.git zlib 1.9.9-b1
+    GITCLONE https://github.com/zlib-ng/zlib-ng.git zlib 2.1.5
     ${CMAKE} \
     -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
     -DCMAKE_C_FLAGS="${MYCFLAGS}" \
@@ -68,14 +68,14 @@ ${MAKE}
 ${MAKE} install PREFIX=${WORKDIR}
 
 # libjpeg
-WGET http://www.ijg.org/files/jpegsrc.v9d.tar.gz
+WGET http://www.ijg.org/files/jpegsrc.v9e.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR}
 
 ${MAKE}
 ${MAKE} install
 
 # libtiff
-WGET https://download.osgeo.org/libtiff/tiff-4.1.0.tar.gz
+WGET https://download.osgeo.org/libtiff/tiff-4.6.0.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --disable-lzma --disable-jbig --prefix ${WORKDIR}
 
 ${MAKE}
@@ -136,7 +136,7 @@ ${MAKE} install
 
 # libunwind
 #APTGETSOURCE libunwind-dev
-WGET http://download.savannah.nongnu.org/releases/libunwind/libunwind-1.4.0.tar.gz
+WGET http://download.savannah.nongnu.org/releases/libunwind/libunwind-1.6.2.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --enable-shared=no --enable-static=yes --prefix ${WORKDIR}
 
 ${MAKE}
@@ -157,26 +157,26 @@ build/cmake
 ${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
 
 # openssl
-WGET https://www.openssl.org/source/openssl-1.1.1s.tar.gz
-CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./config no-ssl3 no-comp no-shared no-dso no-weak-ssl-ciphers no-tests no-deprecated --prefix=${WORKDIR}
+WGET https://www.openssl.org/source/openssl-3.2.0.tar.gz
+CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./config no-ssl2 no-ssl3 no-comp no-shared no-dso no-weak-ssl-ciphers no-tests no-deprecated --prefix=${WORKDIR}
 
 ${MAKE}
 ${MAKE} install_sw
 
 # nghttp2
-WGET https://github.com/nghttp2/nghttp2/releases/download/v1.51.0/nghttp2-1.51.0.tar.gz
+WGET https://github.com/nghttp2/nghttp2/releases/download/v1.58.0/nghttp2-1.58.0.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --enable-lib-only --disable-shared --prefix ${WORKDIR}
 
 ${MAKE}
 ${MAKE} install
 
 # curl
-WGET https://curl.se/download/curl-7.86.0.tar.gz
+WGET https://curl.se/download/curl-8.5.0.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --disable-shared --disable-manual \
   --disable-dict --disable-file --disable-ftp --disable-ftps --disable-gopher \
   --disable-imap --disable-imaps --disable-pop3 --disable-pop3s --disable-rtsp \
   --disable-smb --disable-smbs --disable-smtp --disable-smtps --disable-telnet \
-  --disable-tftp --disable-unix-sockets --with-nghttp2=${WORKDIR} \
+  --disable-tftp --disable-unix-sockets --disable-ntlm --with-nghttp2=${WORKDIR} \
   --with-zlib=${WORKDIR} --with-ssl=${WORKDIR} --prefix ${WORKDIR}
 
 ${MAKE}
@@ -184,7 +184,7 @@ ${MAKE} install
 
 # libogg-dev
 #APTGETSOURCE libogg-dev
-WGET https://github.com/xiph/ogg/releases/download/v1.3.4/libogg-1.3.4.tar.gz
+WGET https://github.com/xiph/ogg/releases/download/v1.3.5/libogg-1.3.5.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --enable-shared=no \
 --enable-static=yes
@@ -213,7 +213,7 @@ ${MAKE}
 ${MAKE} install
 
 #APTGETSOURCE liblzma-dev
-WGET https://downloads.sourceforge.net/project/lzmautils/xz-5.2.5.tar.gz
+WGET https://downloads.sourceforge.net/project/lzmautils/xz-5.4.5.tar.gz
 #if [ -f autogen.sh ]; then
 #  ./autogen.sh
 #fi
@@ -237,7 +237,7 @@ $MAKE install
 #./configure --prefix ${WORKDIR}
 
 #high perf version
-GITCLONE https://github.com/nmoinvaz/minizip.git minizip 3.0.7
+GITCLONE https://github.com/nmoinvaz/minizip.git minizip 3.0.10
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
 -DCMAKE_C_FLAGS="${MYCFLAGS}" \
@@ -265,9 +265,6 @@ ${CMAKE} \
 
 ${MAKE}
 ${MAKE} install
-
-# Hack until https://github.com/zlib-ng/minizip-ng/pull/667 lands on master.
-sed -i 's/-lliblzma/-llzma/g' ${LIBDIR}/pkgconfig/minizip.pc
 
 # SDL2
 : '
