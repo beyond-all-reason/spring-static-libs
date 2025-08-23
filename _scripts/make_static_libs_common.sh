@@ -12,7 +12,7 @@ export CPUARCH="$(uname -m)"
 export TMPDIR=${WORKDIR}/tmp
 export INCLUDEDIR=${WORKDIR}/include
 export LIBDIR=${WORKDIR}/lib
-export MAKE="make -j$(nproc)"
+export MAKECMD="make -j$(nproc)"
 export CMAKE="cmake"
 export DLDIR=${WORKDIR}/download
 
@@ -44,7 +44,7 @@ echo WORKDIR:    $WORKDIR
 echo TMPDIR:     $TMPDIR
 echo INCLUDEDIR: $INCLUDEDIR
 echo LIBDIR:     $LIBDIR
-echo MAKE:       $MAKE
+echo MAKECMD:    $MAKECMD
 echo DLDIR:      $DLDIR
 
 
