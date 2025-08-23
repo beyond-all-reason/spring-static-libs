@@ -3,6 +3,8 @@
 set -e
 source $(dirname $0)/make_static_libs_common.sh
 
+export DEBIAN_FRONTEND=noninteractive
+
 apt update -y
 apt -y install make ninja-build \
 	p7zip-full \
@@ -22,7 +24,8 @@ apt -y install make ninja-build \
 	python3-pip
 
 pip3 install --upgrade pip
-pip3 install cmake
+pip3 install scikit-build
+pip3 install cmake==3.27.*
 
 apt install -y build-essential software-properties-common
 
@@ -34,15 +37,12 @@ apt remove -y $(apt list --installed | cut -d'/' -f1 | grep -e "g\+\+-[0-9]+*$")
 #apt install -y gcc-snapshot
 case $UBUNTU_MAJORVER in
 20)
-  VER="10"
-  ;;
-18)
-  VER="10"
+  VER="13"
   add-apt-repository ppa:ubuntu-toolchain-r/test -y
   apt update -y
   ;;
-16)
-  VER="9"
+18)
+  VER="13"
   add-apt-repository ppa:ubuntu-toolchain-r/test -y
   apt update -y
   ;;

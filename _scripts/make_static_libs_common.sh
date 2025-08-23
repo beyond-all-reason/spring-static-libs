@@ -7,7 +7,8 @@ if [ $# -eq 0 ]; then
 fi
 
 export WORKDIR=$1
-export ARCHINPUT=$2
+export ARCHINPUT=${2:-generic}
+export CPUARCH="$(uname -m)"
 export TMPDIR=${WORKDIR}/tmp
 export INCLUDEDIR=${WORKDIR}/include
 export LIBDIR=${WORKDIR}/lib
@@ -15,18 +16,20 @@ export MAKE="make -j$(nproc)"
 export CMAKE="cmake"
 export DLDIR=${WORKDIR}/download
 
-if [[ $ARCHINPUT == "" ]]; then
-    ARCHINPUT="generic"
-fi
-
-if [[ $ARCHINPUT = "generic" ]]; then
-    MYARCH_FLAGS="-march=nehalem -mtune=nehalem -msse -mno-sse2 -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-avx -mno-fma -mno-fma4 -mno-xop -mno-lwp -mno-avx2" #mtune=generic is bugged somehow and sometimes emits unwanted instructions no matter -mno-*
-else
+if [[ $ARCHINPUT != "generic" ]]; then
     MYARCH_FLAGS="-march=$ARCHINPUT -mtune=$ARCHINPUT"
+    if [[ $CPUARCH == "x86_64" ]]; then
+        MYARCH_FLAGS="$MYARCH_FLAGS -mfpmath=sse"
+    fi
+elif [[ $CPUARCH == "x86_64" ]]; then
+    MYARCH_FLAGS="-march=x86-64 -mtune=generic -msse -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-avx -mno-fma -mno-fma4 -mno-xop -mno-lwp -mno-avx2 -mfpmath=sse"
+elif [[ $CPUARCH == "aarch64" ]]; then
+    # We don't know yet if this will be enough, flags from https://github.com/beyond-all-reason/RecoilEngine/pull/2540
+    MYARCH_FLAGS="-march=armv8-a+simd -ffp-contract=off"
+else
+    echo "Unsupported architecture $CPUARCH!"
+    exit 1
 fi
-
-MYARCH_FLAGS="$MYARCH_FLAGS -mfpmath=sse"
-
 
 export MYCFLAGS="-fcommon -fPIC -DPIC -O3 $MYARCH_FLAGS"
 echo "Building with MYCFLAGS: $MYCFLAGS"
@@ -82,4 +85,3 @@ function APTGETSOURCE {
 	break
   done
 }
-
