@@ -5,7 +5,7 @@ source $(dirname $0)/make_static_libs_common.sh
 
 # zlib
 if [[ $ARCHINPUT = "generic" || $ARCHINPUT = "nehalem" ]]; then
-    WGET https://www.zlib.net/zlib-1.3.1.tar.gz
+    WGET https://zlib.net/fossils/zlib-1.3.1.tar.gz
     CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --static --prefix ${WORKDIR}
 else
     # high perf zlib version
@@ -40,11 +40,11 @@ else
     .
 fi
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 # libpng
-WGET https://downloads.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz
+WGET https://downloads.sourceforge.net/project/libpng/libpng16/1.6.50/libpng-1.6.50.tar.gz
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
 -DCMAKE_C_FLAGS="${MYCFLAGS}" \
@@ -52,34 +52,33 @@ ${CMAKE} \
 -DCMAKE_C_FLAGS_RELWITHDEBINFO="${MYRWDIFLAGS}" \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DPNG_SHARED=OFF \
--DPNG_BUILD_ZLIB=ON \
--DZLIB_INCLUDE_DIR=${INCLUDEDIR} \
--DZLIB_LIBRARY_RELEASE=${LIBDIR}/libz.a \
+-DZLIB_ROOT=${WORKDIR} \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 # libgif
-WGET https://downloads.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz
+WGET https://downloads.sourceforge.net/project/giflib/giflib-5.2.2.tar.gz
 sed -ie "s/OFLAGS  = -O2/OFLAGS=${MYCFLAGS}/g"  Makefile
-${MAKE}
-${MAKE} install PREFIX=${WORKDIR}
+${MAKECMD} libgif.a libgif.so  # so is needed only for install-lib to work
+${MAKECMD} install-include install-lib PREFIX=${WORKDIR}
 
 # libjpeg
-WGET http://www.ijg.org/files/jpegsrc.v9e.tar.gz
+WGET https://www.ijg.org/files/jpegsrc.v9f.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR}
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 # libtiff
-WGET https://download.osgeo.org/libtiff/tiff-4.6.0.tar.gz
-CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --disable-lzma --disable-jbig --prefix ${WORKDIR}
+WGET https://download.osgeo.org/libtiff/tiff-4.7.0.tar.gz
+CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --disable-lzma --disable-jbig \
+  --disable-docs --disable-tests --disable-tools --disable-contrib --prefix ${WORKDIR}
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 # libIL (DevIL)
 #WGET https://api.github.com/repos/spring/DevIL/tarball/d46aa9989f502b89de06801925d20e53d220c1b4
@@ -102,8 +101,8 @@ ${CMAKE} \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 cd ../src-ILU
 sed -i "s/ILU SHARED/ILU/g" CMakeLists.txt
@@ -116,8 +115,8 @@ ${CMAKE} \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 cd ../src-ILUT
 sed -i "s/ILUT SHARED/ILUT/g" CMakeLists.txt
@@ -130,17 +129,17 @@ ${CMAKE} \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 
 # libunwind
 #APTGETSOURCE libunwind-dev
-WGET http://download.savannah.nongnu.org/releases/libunwind/libunwind-1.6.2.tar.gz
+WGET https://download.savannah.nongnu.org/releases/libunwind/libunwind-1.6.2.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --enable-shared=no --enable-static=yes --prefix ${WORKDIR}
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 # glew
 WGET https://downloads.sourceforge.net/project/glew/glew/2.2.0/glew-2.2.0.tgz
@@ -154,43 +153,51 @@ ${CMAKE} \
 -DOpenGL_GL_PREFERENCE=GLVND \
 build/cmake
 
-${MAKE} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
+${MAKECMD} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
 
 # openssl
-WGET https://www.openssl.org/source/openssl-3.2.0.tar.gz
-CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./config no-ssl2 no-ssl3 no-comp no-shared no-dso no-weak-ssl-ciphers no-tests no-deprecated --prefix=${WORKDIR}
+WGET https://github.com/openssl/openssl/releases/download/openssl-3.5.2/openssl-3.5.2.tar.gz
+CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./config no-ssl3 no-comp no-shared no-dso no-weak-ssl-ciphers no-tests no-deprecated --libdir=lib --prefix=${WORKDIR}
 
-${MAKE}
-${MAKE} install_sw
+${MAKECMD}
+${MAKECMD} install_sw
 
-# nghttp2
-WGET https://github.com/nghttp2/nghttp2/releases/download/v1.58.0/nghttp2-1.58.0.tar.gz
+# nghttp2 for curl
+WGET https://github.com/nghttp2/nghttp2/releases/download/v1.66.0/nghttp2-1.66.0.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --enable-lib-only --disable-shared --prefix ${WORKDIR}
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
+
+# libpsl for curl
+WGET https://github.com/rockdaboot/libpsl/releases/download/0.21.5/libpsl-0.21.5.tar.gz
+
+CFLAGS=$MYCFLAGS ./configure --disable-shared --prefix ${WORKDIR}
+${MAKECMD}
+${MAKECMD} install
 
 # curl
-WGET https://curl.se/download/curl-8.5.0.tar.gz
+WGET https://curl.se/download/curl-8.15.0.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --disable-shared --disable-manual \
-  --disable-dict --disable-file --disable-ftp --disable-ftps --disable-gopher \
-  --disable-imap --disable-imaps --disable-pop3 --disable-pop3s --disable-rtsp \
-  --disable-smb --disable-smbs --disable-smtp --disable-smtps --disable-telnet \
-  --disable-tftp --disable-unix-sockets --disable-ntlm --with-nghttp2=${WORKDIR} \
-  --with-zlib=${WORKDIR} --with-ssl=${WORKDIR} --prefix ${WORKDIR}
+  --disable-dict --disable-file --disable-ftp --disable-gopher --disable-imap \
+  --disable-pop3 --disable-rtsp --disable-smb --disable-smtp --disable-smtps \
+  --disable-telnet --disable-tftp --disable-unix-sockets --disable-ntlm --disable-ipfs \
+  --disable-mqtt --disable-docs \
+  --with-nghttp2=${WORKDIR} --with-zlib=${WORKDIR} --with-ssl=${WORKDIR} \
+  --prefix ${WORKDIR}
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 # libogg-dev
 #APTGETSOURCE libogg-dev
-WGET https://github.com/xiph/ogg/releases/download/v1.3.5/libogg-1.3.5.tar.gz
+WGET https://github.com/xiph/ogg/releases/download/v1.3.6/libogg-1.3.6.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --enable-shared=no \
 --enable-static=yes
 
-$MAKE
-$MAKE install
+${MAKECMD}
+${MAKECMD} install
 
 #libvorbis
 WGET https://github.com/xiph/vorbis/releases/download/v1.3.7/libvorbis-1.3.7.tar.gz
@@ -199,8 +206,8 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --enable-static=yes \
 --disable-oggtest
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 #libuuid
 WGET https://downloads.sourceforge.net/project/libuuid/libuuid-1.0.3.tar.gz
@@ -209,11 +216,11 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --enable-static=yes \
 --disable-oggtest
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 #APTGETSOURCE liblzma-dev
-WGET https://downloads.sourceforge.net/project/lzmautils/xz-5.4.5.tar.gz
+WGET https://github.com/tukaani-project/xz/releases/download/v5.8.1/xz-5.8.1.tar.gz
 #if [ -f autogen.sh ]; then
 #  ./autogen.sh
 #fi
@@ -228,8 +235,8 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 #--disable-lzmainfo
 #--disable-lzma-links
 
-$MAKE
-$MAKE install
+${MAKECMD}
+${MAKECMD} install
 
 #libminizip-dev
 #APTGETSOURCE libminizip-dev
@@ -237,7 +244,7 @@ $MAKE install
 #./configure --prefix ${WORKDIR}
 
 #high perf version
-GITCLONE https://github.com/nmoinvaz/minizip.git minizip 3.0.10
+GITCLONE https://github.com/nmoinvaz/minizip.git minizip 4.0.10
 ${CMAKE} \
 -DCMAKE_CXX_FLAGS="${MYCFLAGS}" \
 -DCMAKE_C_FLAGS="${MYCFLAGS}" \
@@ -263,8 +270,8 @@ ${CMAKE} \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 .
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 
 # SDL2
 : '
@@ -357,8 +364,8 @@ ${CMAKE} \
 -DSDL_XINPUT:BOOL=OFF \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR}
 
-${MAKE}
-${MAKE} install
+${MAKECMD}
+${MAKECMD} install
 '
 
 # Finalize()
