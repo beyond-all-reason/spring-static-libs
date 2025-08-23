@@ -1,91 +1,69 @@
 name: Build Linux-64 Static Libs
 on:
   workflow_dispatch:
-#  push:
-#    branches:
-#      - master
     inputs:
       archtune-flags:
         description: Arch/Tune Flags
         required: false
         default: "generic"
-
+      publish:
+        description: "Publish to release branches"
+        type: boolean
+        default: true
+  pull_request:
+  push:
+    branches:
+      - master
 jobs:
   build:
-    name: Ubuntu-${{ matrix.config.distro }}
-    runs-on: ${{ matrix.config.runs-on }}
+    name: build ubuntu-${{ matrix.ubuntu_version }}${{ matrix.arch_suffix }}
+    runs-on: ubuntu-24.04${{ matrix.arch_suffix }}
     strategy:
       fail-fast: true
       matrix:
-        config:
-        - {
-            distro: '20.04',
-            runs-on: 'ubuntu-20.04'
-          }
-        - {
-            distro: '18.04',
-            runs-on: 'ubuntu-18.04'
-          }
+        ubuntu_version: ["20.04", "18.04"]
+        arch_suffix: ["", "-arm"]
     steps:
-      - name: Debug Action
-        uses: hmarr/debug-action@v1.0.0
-
-      - name: Replace CMake version
-        uses: jwlawson/actions-setup-cmake@v1.4
+      - uses: actions/checkout@v5
+      - name: Create builder
+        run: docker build --build-arg UBUNTU_VERSION=${{ matrix.ubuntu_version }} -f _scripts/Dockerfile -t builder .
+      - name: Compile libraries
+        run: |
+          mkdir build
+          docker run -i --rm \
+            -v /etc/passwd:/etc/passwd:ro \
+            -v /etc/group:/etc/group:ro \
+            --user="$(id -u):$(id -g)" \
+            -v $(pwd)/build:/build:rw \
+            builder /scripts/make_static_libs.sh /build "${{ github.event.inputs.archtune-flags }}"
+      - uses: actions/upload-artifact@v4
         with:
-          cmake-version: '3.16.x'
-
-      - name: Apt Update and Installation of Essential Packages
-        run: |
-          sudo apt update -y
-          #sudo apt upgrade -y
-          sudo apt install -y git cmake git wget
-        shell: bash
-
-      - name: Clone the master Branch of Repo
-        id: clone-master-branch
-        run: |
-          git clone https://github.com/${GITHUB_REPOSITORY}.git -b master spring-static-libs-scripts
-          cd spring-static-libs-scripts
-          echo "::set-output name=commit-id::$(git rev-parse --short HEAD)"
-          cd ..
-          git clone https://github.com/${GITHUB_REPOSITORY}.git -b ${{ matrix.config.distro }} spring-static-libs
-        shell: bash
-
-      - name: Clean up old files
-        run: |
-          rm -rf ./*
-        working-directory: ${{ github.workspace }}/spring-static-libs
-        shell: bash
-
-      - name: Execute install-linux.sh
-        run: |
-          sudo ./_scripts/install-linux.sh ${{ github.workspace }}/spring-static-libs
-        working-directory: ${{ github.workspace }}/spring-static-libs-scripts
-        shell: bash
-
-      - name: Execute make_static_libs.sh
-        run: |
-          sudo ./_scripts/make_static_libs.sh ${{ github.workspace }}/spring-static-libs "${{ github.event.inputs.archtune-flags }}"
-        working-directory: ${{ github.workspace }}/spring-static-libs-scripts
-        shell: bash
-
-#      - name: Setup tmate session
-#        if: matrix.config.distro == '20.04'
-#        uses: mxschmitt/action-tmate@v3
-
-      - name: Commit files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name  "GitHub Action"
-          git add -A .
-          git commit -m "Github Action Build of ${{ steps.clone-master-branch.outputs.commit-id }}"
-        working-directory: ${{ github.workspace }}/spring-static-libs
-        shell: bash
-
-      - name: Push Changes to ${{ matrix.config.distro }} Branch
-        uses: ad-m/github-push-action@master
+          name: build-${{ matrix.ubuntu_version }}${{ matrix.arch_suffix }}
+          path: build
+          retention-days: 7
+  publish:
+    name: publish ${{ matrix.ubuntu_version }}${{ matrix.arch_suffix }} branch
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && inputs.publish == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        ubuntu_version: ["20.04", "18.04"]
+        arch_suffix: ["", "-arm"]
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ matrix.config.distro }}
-          directory: ${{ github.workspace }}/spring-static-libs
+          ref: ${{ matrix.ubuntu_version }}${{ matrix.arch_suffix }}
+      - name: Clean up old versions
+        run: rm -rf ./*
+      - name: Fetch new build
+        uses: actions/download-artifact@v5
+        with:
+          name: build-${{ matrix.ubuntu_version }}${{ matrix.arch_suffix }}
+      - name: Commit and push
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: Automatic build from ${{ github.sha }}

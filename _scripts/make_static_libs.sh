@@ -5,7 +5,7 @@ source $(dirname $0)/make_static_libs_common.sh
 
 # zlib
 if [[ $ARCHINPUT = "generic" || $ARCHINPUT = "nehalem" ]]; then
-    WGET https://www.zlib.net/zlib-1.3.tar.gz
+    WGET https://www.zlib.net/zlib-1.3.1.tar.gz
     CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --static --prefix ${WORKDIR}
 else
     # high perf zlib version
@@ -224,7 +224,7 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --disable-xzdec  \
 --disable-scripts  \
 --disable-doc \
-#--disable-lzmadec 
+#--disable-lzmadec
 #--disable-lzmainfo
 #--disable-lzma-links
 
