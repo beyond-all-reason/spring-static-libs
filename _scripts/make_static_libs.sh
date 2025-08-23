@@ -134,7 +134,6 @@ ${MAKECMD} install
 
 
 # libunwind
-#APTGETSOURCE libunwind-dev
 WGET https://download.savannah.nongnu.org/releases/libunwind/libunwind-1.6.2.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --enable-shared=no --enable-static=yes --prefix ${WORKDIR}
 
@@ -151,6 +150,8 @@ ${CMAKE} \
 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 -DCMAKE_INSTALL_PREFIX=${WORKDIR} \
 -DOpenGL_GL_PREFERENCE=GLVND \
+-DBUILD_UTILS=OFF \
+-DBUILD_SHARED_LIBS=OFF \
 build/cmake
 
 ${MAKECMD} GLEW_PREFIX=${WORKDIR} GLEW_DEST=${WORKDIR} LIBDIR=${LIBDIR} install
@@ -190,7 +191,6 @@ ${MAKECMD}
 ${MAKECMD} install
 
 # libogg-dev
-#APTGETSOURCE libogg-dev
 WGET https://github.com/xiph/ogg/releases/download/v1.3.6/libogg-1.3.6.tar.gz
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --enable-shared=no \
@@ -219,29 +219,17 @@ CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 ${MAKECMD}
 ${MAKECMD} install
 
-#APTGETSOURCE liblzma-dev
 WGET https://github.com/tukaani-project/xz/releases/download/v5.8.1/xz-5.8.1.tar.gz
-#if [ -f autogen.sh ]; then
-#  ./autogen.sh
-#fi
 CFLAGS=$MYCFLAGS CXXFLAGS=$MYCFLAGS ./configure --prefix ${WORKDIR} \
 --enable-shared=no \
 --enable-static=yes \
 --disable-xz  \
 --disable-xzdec  \
 --disable-scripts  \
---disable-doc \
-#--disable-lzmadec
-#--disable-lzmainfo
-#--disable-lzma-links
+--disable-doc
 
 ${MAKECMD}
 ${MAKECMD} install
-
-#libminizip-dev
-#APTGETSOURCE libminizip-dev
-#autoreconf -i
-#./configure --prefix ${WORKDIR}
 
 #high perf version
 GITCLONE https://github.com/nmoinvaz/minizip.git minizip 4.0.10

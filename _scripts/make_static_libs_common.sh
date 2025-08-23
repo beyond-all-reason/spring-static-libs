@@ -74,14 +74,3 @@ function GITCLONE {
   git clone --recursive -b $BRANCH $URL $DIR
   cd $DIR
 }
-
-function APTGETSOURCE {
-  pkg=$1
-  cd $(mktemp -d)
-  apt source $pkg && apt-get build-dep -y $pkg
-  tmp_dir=$(pwd)
-  for d in $(find ./ -maxdepth 1 -not -path "./" -type d); do
-    cd $d
-	break
-  done
-}
