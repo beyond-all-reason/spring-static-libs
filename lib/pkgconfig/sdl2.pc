@@ -1,0 +1,14 @@
+# sdl pkg-config source file
+
+prefix=/spring-static-libs
+exec_prefix=${prefix}
+libdir=/spring-static-libs/lib
+includedir=/spring-static-libs/include
+
+Name: sdl2
+Description: Simple DirectMedia Layer is a cross-platform multimedia library designed to provide low level access to audio, keyboard, mouse, joystick, 3D hardware via OpenGL, and 2D video framebuffer.
+Version: 2.0.18
+Requires:
+Conflicts:
+Libs: -L${libdir}  -lSDL2   -ldl -lm  -Wl,--no-undefined -lSDL2 
+Cflags: -I${includedir}/SDL2 
