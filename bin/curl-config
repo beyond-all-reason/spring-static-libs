@@ -23,7 +23,7 @@
 #
 ###########################################################################
 
-prefix="/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs"
+prefix="/spring-static-libs"
 exec_prefix=${prefix}
 includedir=${prefix}/include
 cppflag_curl_staticlib=-DCURL_STATICLIB
@@ -174,7 +174,7 @@ while test $# -gt 0; do
 
     --static-libs)
         if test "Xyes" != "Xno" ; then
-          echo "${exec_prefix}/lib/libcurl.a" -L/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib -L/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib -L/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib -lnghttp2 -lssl -lcrypto -lz -ldl -lpthread -pthread
+          echo "${exec_prefix}/lib/libcurl.a" -L/spring-static-libs/lib -L/spring-static-libs/lib -L/spring-static-libs/lib -lnghttp2 -lssl -lcrypto -lz -ldl -lpthread -pthread
         else
           echo "curl was built with static libraries disabled" >&2
           exit 1
@@ -182,7 +182,7 @@ while test $# -gt 0; do
         ;;
 
     --configure)
-        echo " '--disable-shared' '--disable-manual' '--disable-dict' '--disable-file' '--disable-ftp' '--disable-ftps' '--disable-gopher' '--disable-imap' '--disable-imaps' '--disable-pop3' '--disable-pop3s' '--disable-rtsp' '--disable-smb' '--disable-smbs' '--disable-smtp' '--disable-smtps' '--disable-telnet' '--disable-tftp' '--disable-unix-sockets' '--with-nghttp2=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs' '--with-zlib=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs' '--with-ssl=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs' '--prefix' '/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs' 'CFLAGS=-fcommon -fPIC -DPIC -O3 -march=nehalem -mtune=nehalem -msse -mno-sse2 -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-avx -mno-fma -mno-fma4 -mno-xop -mno-lwp -mno-avx2 -mfpmath=sse'"
+        echo " '--disable-shared' '--disable-manual' '--disable-dict' '--disable-file' '--disable-ftp' '--disable-ftps' '--disable-gopher' '--disable-imap' '--disable-imaps' '--disable-pop3' '--disable-pop3s' '--disable-rtsp' '--disable-smb' '--disable-smbs' '--disable-smtp' '--disable-smtps' '--disable-telnet' '--disable-tftp' '--disable-unix-sockets' '--with-nghttp2=/spring-static-libs' '--with-zlib=/spring-static-libs' '--with-ssl=/spring-static-libs' '--prefix' '/spring-static-libs' 'CFLAGS=-fcommon -fPIC -DPIC -O3 -march=nehalem -mtune=nehalem -msse -mno-sse2 -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-avx -mno-fma -mno-fma4 -mno-xop -mno-lwp -mno-avx2 -mfpmath=sse'"
         ;;
 
     *)

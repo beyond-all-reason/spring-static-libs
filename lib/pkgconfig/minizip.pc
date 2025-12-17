@@ -1,8 +1,8 @@
-prefix=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs
-exec_prefix=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs
-libdir=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib
-sharedlibdir=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib
-includedir=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/include
+prefix=/spring-static-libs
+exec_prefix=/spring-static-libs
+libdir=/spring-static-libs/lib
+sharedlibdir=/spring-static-libs/lib
+includedir=/spring-static-libs/include
 
 Name: minizip
 Description: Minizip zip file manipulation library

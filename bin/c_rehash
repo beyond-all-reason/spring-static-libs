@@ -13,7 +13,7 @@
 # and add symbolic links to their hash values.
 
 my $dir = "";
-my $prefix = "/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs";
+my $prefix = "/spring-static-libs";
 
 my $errorcount = 0;
 my $openssl = $ENV{OPENSSL} || "openssl";
