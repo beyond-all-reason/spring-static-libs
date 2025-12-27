@@ -55,10 +55,13 @@ mkdir -p ${DLDIR}
 
 function WGET {
   URL=$1
+  SHA256=$2
   FILENAME=${DLDIR}/$(basename $1)
   if ! [ -s $FILENAME ]; then
     /usr/bin/wget $1 -O $FILENAME
   fi
+  sha256sum $FILENAME
+  echo "$SHA256 $FILENAME" | sha256sum --check
 
   cd $(mktemp -d)
   tar xifzv $FILENAME --strip-components=1
@@ -68,9 +71,14 @@ function GITCLONE {
   URL=$1
   DIR=$2
   BRANCH=$3
+  COMMIT=$4
 
   cd $(mktemp -d)
 
   git clone --recursive -b $BRANCH $URL $DIR
   cd $DIR
+  git rev-parse HEAD
+  if [[ $(git rev-parse HEAD) != $COMMIT ]]; then
+    echo "Fetched and expected git commit don't match"
+  fi
 }
