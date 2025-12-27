@@ -31,7 +31,7 @@ else
     exit 1
 fi
 
-export MYCFLAGS="-fcommon -fPIC -DPIC -O3 $MYARCH_FLAGS"
+export MYCFLAGS="-fcommon -fPIC -DPIC -O3 -fno-omit-frame-pointer $MYARCH_FLAGS"
 echo "Building with MYCFLAGS: $MYCFLAGS"
 
 export MYRWDIFLAGS="-ggdb3 -DNDEBUG"
