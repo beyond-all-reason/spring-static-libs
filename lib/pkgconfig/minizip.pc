@@ -1,14 +1,14 @@
-prefix=/spring-static-libs
-exec_prefix=/spring-static-libs
-libdir=/spring-static-libs/lib
-sharedlibdir=/spring-static-libs/lib
-includedir=/spring-static-libs/include
+prefix=/build
+exec_prefix=/build
+libdir=/build/lib
+sharedlibdir=/build/lib
+includedir=/build/include/minizip
 
 Name: minizip
-Description: Minizip zip file manipulation library
-Version: 3.0.7
+Description: Zip manipulation library
+Version: 4.0.10
 
-Requires: zlib
+Requires.private: zlib
 Libs: -L${libdir} -L${sharedlibdir} -lminizip
-Libs.private: -lz -llzma
+Libs.private: -llzma
 Cflags: -I${includedir}

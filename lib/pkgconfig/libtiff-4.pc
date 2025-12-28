@@ -1,11 +1,12 @@
-prefix=/spring-static-libs
+prefix=/build
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
 Name: libtiff
 Description:  Tag Image File Format (TIFF) library.
-Version: 4.1.0
+Version: 4.7.0
 Libs: -L${libdir} -ltiff
-Libs.private: -lz -lm 
+Libs.private: -lm 
 Cflags: -I${includedir}
+Requires.private: 

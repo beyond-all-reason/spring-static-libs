@@ -1,19 +1,16 @@
-#
+# SPDX-License-Identifier: 0BSD
 # Author: Lasse Collin
-#
-# This file has been put into the public domain.
-# You can do whatever you want with this file.
-#
 
-prefix=/spring-static-libs
-exec_prefix=/spring-static-libs
-libdir=/spring-static-libs/lib
-includedir=/spring-static-libs/include
+prefix=/build
+exec_prefix=/build
+libdir=/build/lib
+includedir=/build/include
 
 Name: liblzma
 Description: General purpose data compression library
 URL: https://tukaani.org/xz/
-Version: 5.2.5
+Version: 5.8.1
 Cflags: -I${includedir}
+Cflags.private: -DLZMA_API_STATIC
 Libs: -L${libdir} -llzma
-Libs.private: -pthread -lpthread
+Libs.private: -pthread -lpthread 
