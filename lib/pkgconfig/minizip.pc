@@ -1,0 +1,14 @@
+prefix=/build
+exec_prefix=/build
+libdir=/build/lib
+sharedlibdir=/build/lib
+includedir=/build/include/minizip
+
+Name: minizip
+Description: Zip manipulation library
+Version: 4.0.10
+
+Requires.private: zlib
+Libs: -L${libdir} -L${sharedlibdir} -lminizip
+Libs.private: -llzma
+Cflags: -I${includedir}

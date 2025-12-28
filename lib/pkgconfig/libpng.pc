@@ -1,0 +1,12 @@
+prefix=/build
+exec_prefix=/build
+libdir=/build/lib
+includedir=/build/include/libpng16
+
+Name: libpng
+Description: Loads and saves PNG files
+Version: 1.6.50
+Requires.private: zlib
+Libs: -L${libdir} -lpng16
+Libs.private: -lz -lm
+Cflags: -I${includedir}
