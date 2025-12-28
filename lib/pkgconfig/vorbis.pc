@@ -1,6 +1,6 @@
 # libvorbis pkg-config source file
 
-prefix=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs
+prefix=/build
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

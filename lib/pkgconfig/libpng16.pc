@@ -1,12 +1,12 @@
-prefix=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs
-exec_prefix=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs
-libdir=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/lib
-includedir=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs/include/libpng16
+prefix=/build
+exec_prefix=/build
+libdir=/build/lib
+includedir=/build/include/libpng16
 
 Name: libpng
 Description: Loads and saves PNG files
-Version: 1.6.37
-Requires: zlib
+Version: 1.6.50
+Requires.private: zlib
 Libs: -L${libdir} -lpng16
 Libs.private: -lz -lm
 Cflags: -I${includedir}

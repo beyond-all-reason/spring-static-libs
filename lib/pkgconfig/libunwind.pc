@@ -1,11 +1,11 @@
-prefix=/home/runner/work/spring-static-libs/spring-static-libs/spring-static-libs
+prefix=/build
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
 Name: libunwind
 Description: libunwind base library
-Version: 1.4.0
+Version: 1.6.2
 Libs: -L${libdir} -lunwind
-Libs.private: -llzma
+Libs.private:  
 Cflags: -I${includedir}

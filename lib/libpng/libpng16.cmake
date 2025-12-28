@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_LESS "2.8.3")
    message(FATAL_ERROR "CMake >= 2.8.3 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.8.3...3.23)
+cmake_policy(VERSION 2.8.3...3.25)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -58,7 +58,9 @@ endif()
 add_library(png_static STATIC IMPORTED)
 
 set_target_properties(png_static PROPERTIES
-  INTERFACE_LINK_LIBRARIES "/usr/lib/x86_64-linux-gnu/libm.so"
+  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include/libpng16"
+  INTERFACE_LINK_LIBRARIES "ZLIB::ZLIB;m"
+  INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "include/libpng16"
 )
 
 if(CMAKE_VERSION VERSION_LESS 2.8.12)
