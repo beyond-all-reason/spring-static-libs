@@ -18,10 +18,24 @@ jobs:
   download:
     name: download sources
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v6
       - name: Download sources
         run: bash _scripts/download_sources.sh sources
+      - name: Authenticate to GCS
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/905252765012/locations/global/workloadIdentityPools/github-actions/providers/github
+      - name: Setup gcloud
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: google-github-actions/setup-gcloud@v3
+      - name: Sync sources to GCS cache
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: gcloud storage rsync sources/ gs://recoil-linux-static-build-sources-17834/
       - uses: actions/upload-artifact@v7
         with:
           name: sources

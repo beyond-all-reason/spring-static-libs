@@ -10,15 +10,25 @@ fi
 DLDIR=$1
 mkdir -p "${DLDIR}"
 
+GCS_CACHE_BASE=https://storage.googleapis.com/recoil-linux-static-build-sources-17834
+
 function DOWNLOAD {
 	local URL=$1
 	local SHA256=$2
 	local NAME=${3:-$(basename "$URL")}
 	local FILENAME=${DLDIR}/${NAME}
-	if ! [ -s "$FILENAME" ]; then
-		echo "Downloading ${NAME}..."
-		wget -q "$URL" -O "$FILENAME"
+	if [ -s "$FILENAME" ] && echo "$SHA256  $FILENAME" | sha256sum --check 2>/dev/null; then
+		return
 	fi
+	rm -f "$FILENAME"
+	echo "Trying cache for ${NAME}..."
+	if wget -q "${GCS_CACHE_BASE}/${NAME}" -O "$FILENAME" 2>/dev/null \
+	   && echo "$SHA256  $FILENAME" | sha256sum --check 2>/dev/null; then
+		return
+	fi
+	rm -f "$FILENAME"
+	echo "Downloading ${NAME} from origin..."
+	wget -q "$URL" -O "$FILENAME"
 	echo "$SHA256  $FILENAME" | sha256sum --check
 }
 
