@@ -36,7 +36,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v3
       - name: Sync sources to GCS cache
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        run: gcloud storage rsync sources/ gs://recoil-linux-static-build-sources-17834/
+        run: gcloud storage rsync --no-clobber sources/ gs://recoil-linux-static-build-sources-17834/
       - uses: actions/upload-artifact@v7
         with:
           name: sources
