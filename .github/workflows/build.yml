@@ -15,8 +15,21 @@ on:
     branches:
       - master
 jobs:
+  download:
+    name: download sources
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Download sources
+        run: bash _scripts/download_sources.sh sources
+      - uses: actions/upload-artifact@v7
+        with:
+          name: sources
+          path: sources
+          retention-days: 1
   build:
     name: build ubuntu-${{ matrix.ubuntu_version }}${{ matrix.arch_suffix }}
+    needs: download
     runs-on: ubuntu-24.04${{ matrix.arch_suffix }}
     strategy:
       fail-fast: true
@@ -24,19 +37,24 @@ jobs:
         ubuntu_version: ["20.04", "18.04"]
         arch_suffix: ["", "-arm"]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: sources
+          path: sources
       - name: Create builder
         run: docker build --build-arg UBUNTU_VERSION=${{ matrix.ubuntu_version }} -f _scripts/Dockerfile -t builder .
       - name: Compile libraries
         run: |
-          mkdir build
+          mkdir -p build/download
+          cp sources/* build/download/
           docker run -i --rm \
             -v /etc/passwd:/etc/passwd:ro \
             -v /etc/group:/etc/group:ro \
             --user="$(id -u):$(id -g)" \
             -v $(pwd)/build:/build:rw \
             builder /scripts/make_static_libs.sh /build "${{ github.event.inputs.archtune-flags }}"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: build-${{ matrix.ubuntu_version }}${{ matrix.arch_suffix }}
           path: build
@@ -54,16 +72,16 @@ jobs:
         arch_suffix: ["", "-arm"]
     steps:
       - name: Checkout target branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ matrix.ubuntu_version }}${{ matrix.arch_suffix }}
       - name: Clean up old versions
         run: rm -rf ./*
       - name: Fetch new build
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: build-${{ matrix.ubuntu_version }}${{ matrix.arch_suffix }}
       - name: Commit and push
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9  # v7.1.0
         with:
           commit_message: Automatic build from ${{ github.sha }}
