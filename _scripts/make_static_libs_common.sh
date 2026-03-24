@@ -53,36 +53,17 @@ mkdir -p ${INCLUDEDIR}
 mkdir -p ${LIBDIR}
 mkdir -p ${DLDIR}
 
-function WGET {
-  local URL=$1
-  local SHA256=$2
-  local FILENAME=${DLDIR}/$(basename $1)
-  if ! [ -s $FILENAME ]; then
-    /usr/bin/wget $1 -O $FILENAME
+function EXTRACT {
+  local FILENAME=${DLDIR}/$1
+  if ! [ -s "$FILENAME" ]; then
+    echo "Missing pre-downloaded archive: $1"
+    exit 1
   fi
-  sha256sum $FILENAME
-  echo "$SHA256 $FILENAME" | sha256sum --check
+  local HASH
+  HASH=$(sha256sum "$FILENAME" | cut -d' ' -f1)
 
-  mkdir $TMPDIR/$SHA256
-  cd $TMPDIR/$SHA256
+  mkdir $TMPDIR/$HASH
+  cd $TMPDIR/$HASH
   export SOURCE_DATE_EPOCH=$(date -d "$(tar -tzvf $FILENAME --full-time | awk '{print $4, $5}' | sort | tail -n 1)" +%s)
   tar xifzv $FILENAME --strip-components=1
-}
-
-function GITCLONE {
-  local URL=$1
-  local DIR=$2
-  local BRANCH=$3
-  local COMMIT=$4
-
-  mkdir $TMPDIR/$COMMIT
-  cd $TMPDIR/$COMMIT
-
-  git clone --recursive -b $BRANCH $URL $DIR
-  cd $DIR
-  git rev-parse HEAD
-  if [[ $(git rev-parse HEAD) != $COMMIT ]]; then
-    echo "Fetched and expected git commit don't match"
-  fi
-  export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
 }
