@@ -29,6 +29,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: google-github-actions/auth@v2
         with:
+          project_id: bar-data-420618
           workload_identity_provider: projects/905252765012/locations/global/workloadIdentityPools/github-actions/providers/github
       - name: Setup gcloud
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
